@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>O'Connor Budget</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f1923; --ink2: #2a3a4a; --ink3: #7a8a9a;
+  --paper: #f4f0e8; --paper2: #e8e2d8; --paper3: #d8d0c4;
+  --green: #2d6a4f; --green-l: #d8f3dc; --green-m: #52b788;
+  --red: #b5192b; --red-l: #fce8e8;
+  --amber: #d4760a; --amber-l: #fff0d0;
+  --blue: #1a4a8a; --blue-l: #e4edf8;
+  --gold: #c9a84c; --white: #ffffff;
+  --nav-h: 72px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); height: 100%; }
+
+.app { display: flex; flex-direction: column; height: 100%; min-height: 100vh; }
+
+/* TOP BAR */
+.topbar { background: var(–ink); padding: 16px 16px 12px; flex-shrink: 0; }
+.topbar-row { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: ‘DM Serif Display’, serif; font-size: 20px; color: var(–gold); }
+.period-pill {
+background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 500;
+padding: 5px 11px; border-radius: 20px; cursor: pointer; outline: none;
+-webkit-appearance: none;
+}
+.period-date { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 6px; }
+
+/* SCROLL */
+.scroll-area {
+flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+padding: 14px 14px 100px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+position: fixed; bottom: 0; left: 0; right: 0;
+background: var(–white); border-top: 1px solid var(–paper2);
+display: flex; padding-bottom: env(safe-area-inset-bottom, 0px);
+z-index: 200; box-shadow: 0 -2px 16px rgba(15,25,35,0.08);
+}
+.nav-item {
+flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+padding: 10px 4px 8px; cursor: pointer; color: var(–ink3);
+font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+border: none; background: none; -webkit-appearance: none; font-family: ‘DM Sans’, sans-serif;
+}
+.nav-item .ni { font-size: 20px; line-height: 1.2; }
+.nav-item.active { color: var(–blue); }
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* CARDS */
+.card { background: var(–white); border-radius: 14px; box-shadow: 0 1px 8px rgba(15,25,35,0.07); padding: 15px; margin-bottom: 12px; }
+.card-title { font-family: ‘DM Serif Display’, serif; font-size: 17px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+/* TILES */
+.tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.tile { background: var(–white); border-radius: 12px; padding: 12px 8px; text-align: center; box-shadow: 0 1px 8px rgba(15,25,35,0.07); }
+.tile-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(–ink3); margin-bottom: 4px; }
+.tile-val { font-family: ‘DM Serif Display’, serif; font-size: 17px; }
+.g { color: var(–green); } .r { color: var(–red); } .b { color: var(–blue); }
+
+/* PROGRESS */
+.prog-bg { height: 7px; background: var(–paper2); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+.prog-fill { height: 100%; border-radius: 4px; background: var(–green); transition: width 0.5s ease; }
+.prog-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(–ink3); }
+
+/* DD */
+.sec-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(–ink3); padding: 10px 0 5px; }
+.dd-row {
+display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+border-radius: 10px; margin-bottom: 5px; background: var(–paper);
+border: 1.5px solid transparent; cursor: pointer;
+-webkit-user-select: none; user-select: none;
+}
+.dd-row.confirmed { background: var(–green-l); border-color: var(–green-m); }
+.dd-row.issue     { background: var(–red-l);   border-color: var(–red); }
+.dd-row.checking  { background: var(–amber-l); border-color: var(–amber); }
+.dd-circle {
+width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(–paper3);
+background: var(–white); display: flex; align-items: center; justify-content: center;
+font-size: 12px; flex-shrink: 0;
+}
+.dd-row.confirmed .dd-circle { background: var(–green); border-color: var(–green); color: white; }
+.dd-row.issue .dd-circle     { background: var(–red);   border-color: var(–red);   color: white; }
+.dd-row.checking .dd-circle  { background: var(–amber); border-color: var(–amber); color: white; }
+.dd-info { flex: 1; min-width: 0; }
+.dd-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dd-row.confirmed .dd-name { color: var(–green); }
+.dd-due { font-size: 11px; color: var(–ink3); margin-top: 1px; }
+.dd-right { text-align: right; flex-shrink: 0; }
+.dd-amt { font-family: ‘DM Serif Display’, serif; font-size: 15px; }
+.dd-row.confirmed .dd-amt { color: var(–green); }
+.dd-hint { font-size: 9px; color: var(–ink3); margin-top: 1px; }
+.add-row {
+display: flex; align-items: center; justify-content: center; gap: 8px;
+width: 100%; padding: 11px; margin-top: 6px;
+background: var(–blue-l); border: 1.5px dashed var(–blue);
+border-radius: 10px; color: var(–blue); font-size: 14px; font-weight: 600; cursor: pointer;
+}
+
+/* VARIABLE */
+.var-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(–paper2); }
+.var-row:last-of-type { border-bottom: none; }
+.var-emoji { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.var-info { flex: 1; }
+.var-name { font-size: 14px; font-weight: 500; }
+.var-bud { font-size: 11px; color: var(–ink3); margin-top: 1px; }
+.var-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.var-input {
+width: 88px; text-align: right; border: 1.5px solid var(–paper3); border-radius: 8px;
+padding: 6px 9px; font-family: ‘DM Serif Display’, serif; font-size: 16px;
+color: var(–ink); background: var(–paper); outline: none;
+}
+.var-input:focus { border-color: var(–blue); background: var(–white); }
+.var-diff { font-size: 11px; font-weight: 600; }
+.var-diff.over { color: var(–red); } .var-diff.under { color: var(–green); }
+
+/* DEBT HERO */
+.debt-hero {
+background: linear-gradient(135deg, var(–ink), var(–ink2));
+border-radius: 14px; padding: 18px; margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.debt-hero::before {
+content:’’; position: absolute; right: -15px; top: -15px;
+width: 80px; height: 80px; border-radius: 50%; background: rgba(201,168,76,0.15);
+}
+.dh-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
+.dh-amt { font-family: ‘DM Serif Display’, serif; font-size: 36px; color: white; letter-spacing: -1px; }
+.dh-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 5px; }
+.dh-sub strong { color: var(–green-m); }
+.debt-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px; margin-top: 14px; }
+.d-dot { background: rgba(255,255,255,0.08); border-radius: 6px; padding: 5px 2px; text-align: center; }
+.d-dot.has { background: rgba(82,183,136,0.22); }
+.d-dot-lbl { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 600; }
+.d-dot-val { font-size: 9px; color: var(–green-m); font-weight: 600; margin-top: 2px; }
+.debt-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(–paper2); }
+.debt-row:last-child { border-bottom: none; }
+.debt-row-info { flex: 1; }
+.debt-row-name { font-size: 14px; font-weight: 500; }
+.debt-row-open { font-size: 11px; color: var(–ink3); margin-top: 2px; }
+.debt-input {
+width: 100px; text-align: right; border: 1.5px solid var(–paper3); border-radius: 8px;
+padding: 7px 10px; font-family: ‘DM Serif Display’, serif; font-size: 15px;
+background: var(–paper); outline: none;
+}
+.debt-input:focus { border-color: var(–blue); background: var(–white); }
+
+/* CONTEXT SHEET */
+.sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(15,25,35,0.55); z-index: 300; }
+.sheet-overlay.open { display: block; }
+.sheet {
+position: fixed; bottom: 0; left: 0; right: 0; background: var(–white);
+border-radius: 20px 20px 0 0; padding: 10px 14px 32px;
+transform: translateY(100%); transition: transform 0.28s ease; z-index: 301;
+}
+.sheet-overlay.open .sheet { transform: translateY(0); }
+.sheet-handle { width: 36px; height: 4px; background: var(–paper3); border-radius: 2px; margin: 0 auto 16px; }
+.sheet-title { font-family: ‘DM Serif Display’, serif; font-size: 18px; margin-bottom: 14px; }
+.s-opt {
+display: flex; align-items: center; gap: 12px; padding: 13px 12px; border-radius: 10px;
+font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 3px;
+}
+.s-opt:active { background: var(–paper); }
+.s-opt-icon { font-size: 20px; width: 28px; text-align: center; }
+.s-opt.g { color: var(–green); } .s-opt.a { color: var(–amber); }
+.s-opt.r { color: var(–red); }   .s-opt.gr { color: var(–ink3); }
+
+/* FORM SHEET */
+.form-bg { display: none; position: fixed; inset: 0; background: rgba(15,25,35,0.55); z-index: 400; }
+.form-bg.open { display: block; }
+.form-sheet {
+position: fixed; bottom: 0; left: 0; right: 0; background: var(–white);
+border-radius: 20px 20px 0 0; padding: 10px 16px 36px;
+transform: translateY(100%); transition: transform 0.28s ease; z-index: 401;
+max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.form-bg.open .form-sheet { transform: translateY(0); }
+.f-handle { width: 36px; height: 4px; background: var(–paper3); border-radius: 2px; margin: 0 auto 18px; }
+.f-title { font-family: ‘DM Serif Display’, serif; font-size: 20px; margin-bottom: 16px; }
+.f-field { margin-bottom: 13px; }
+.f-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(–ink3); margin-bottom: 5px; }
+.f-inp {
+width: 100%; padding: 12px 13px; border: 1.5px solid var(–paper3); border-radius: 10px;
+font-family: ‘DM Sans’, sans-serif; font-size: 16px; color: var(–ink); background: var(–paper);
+outline: none; -webkit-appearance: none;
+}
+.f-inp:focus { border-color: var(–blue); background: var(–white); }
+.f-btn {
+width: 100%; padding: 14px; border: none; border-radius: 12px;
+font-family: ‘DM Sans’, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer;
+-webkit-appearance: none; margin-top: 5px;
+}
+.f-primary { background: var(–ink); color: white; }
+.f-cancel  { background: var(–paper2); color: var(–ink3); margin-top: 8px; }
+
+/* TOAST */
+.toast {
+position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
+background: var(–ink); color: white; padding: 9px 18px; border-radius: 20px;
+font-size: 13px; font-weight: 500; z-index: 999; white-space: nowrap;
+box-shadow: 0 4px 16px rgba(15,25,35,0.25); transition: top 0.3s ease;
+}
+.toast.show { top: 20px; }
+
+/* ALL DONE */
+.all-done-card {
+background: linear-gradient(135deg, var(–green), #40916c);
+border-radius: 14px; padding: 16px; color: white; text-align: center; margin-bottom: 12px;
+}
+.ad-big { font-family: ‘DM Serif Display’, serif; font-size: 22px; }
+.ad-sub { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+
+/* OV VAR */
+.ov-vrow { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(–paper2); font-size: 13px; }
+.ov-vrow:last-child { border-bottom: none; }
+</style>
+
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="logo">O'Connor Budget</div>
+      <select class="period-pill" id="periodSel" onchange="changePeriod(this.value)">
+        <option value="0">Jan period</option><option value="1">Feb period</option>
+        <option value="2">Mar period</option><option value="3">Apr period</option>
+        <option value="4">May period</option><option value="5">Jun period</option>
+        <option value="6">Jul period</option><option value="7">Aug period</option>
+        <option value="8">Sep period</option><option value="9">Oct period</option>
+        <option value="10">Nov period</option><option value="11">Dec period</option>
+      </select>
+    </div>
+    <div class="period-date" id="periodDate"></div>
+  </div>
+
+  <div class="scroll-area" id="scrollArea">
+
+```
+<div class="screen active" id="scr-overview">
+  <div class="tiles">
+    <div class="tile"><div class="tile-lbl">Income</div><div class="tile-val g" id="ov-income">£5,583</div></div>
+    <div class="tile"><div class="tile-lbl">Out</div><div class="tile-val r" id="ov-out">—</div></div>
+    <div class="tile"><div class="tile-lbl">Left</div><div class="tile-val b" id="ov-left">—</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Direct Debits</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;">
+      <span id="ov-dd-lbl" style="color:var(--ink3)">0 of 0 confirmed</span>
+      <span id="ov-dd-amt" style="font-weight:600;color:var(--green)">£0</span>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="ov-dd-bar" style="width:0%"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🛒 Variable</div>
+    <div id="ov-var"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💳 Debt</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span style="font-size:13px;color:var(--ink3)">Total remaining</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:22px;" id="ov-debt">£20,000</span>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="ov-debt-bar" style="width:0%;background:var(--gold)"></div></div>
+    <div class="prog-labels"><span id="ov-debt-paid">£0 paid</span><span>£20,000 start</span></div>
+    <div style="font-size:12px;color:var(--ink3);margin-top:8px;" id="ov-debt-eta"></div>
+  </div>
+</div>
+
+<div class="screen" id="scr-dd">
+  <div id="dd-done" style="display:none">
+    <div class="all-done-card"><div class="ad-big">🎉 All confirmed!</div><div class="ad-sub">Every payment ticked off this period</div></div>
+  </div>
+  <div id="dd-body"></div>
+</div>
+
+<div class="screen" id="scr-var">
+  <div class="card">
+    <div class="card-title">🛒 Variable Spend</div>
+    <div id="var-list"></div>
+    <div style="border-top:2px solid var(--paper2);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:600;">Total</span>
+      <div style="text-align:right;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;" id="var-total">—</div>
+        <div style="font-size:11px;color:var(--ink3)">Budget: <span id="var-bud">£975</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="scr-debt">
+  <div class="debt-hero">
+    <div class="dh-lbl">Total Debt Remaining</div>
+    <div class="dh-amt" id="dh-amt">£20,000</div>
+    <div class="dh-sub">Paying approx. <strong>£1,000/month</strong> · <span id="dh-eta">~20 months</span></div>
+    <div class="debt-grid" id="debt-grid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📝 Update balances</div>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;">Enter current balance for each debt</div>
+    <div id="debt-list"></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-overview" onclick="go('overview')"><span class="ni">📊</span>Overview</button>
+    <button class="nav-item" id="nav-dd" onclick="go('dd')"><span class="ni">📋</span>Payments</button>
+    <button class="nav-item" id="nav-var" onclick="go('var')"><span class="ni">🛒</span>Variable</button>
+    <button class="nav-item" id="nav-debt" onclick="go('debt')"><span class="ni">💳</span>Debt</button>
+  </nav>
+
+</div>
+
+<!-- CONTEXT SHEET -->
+
+<div class="sheet-overlay" id="ctxBg" onclick="closeCtx()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="ctx-name">Options</div>
+    <div class="s-opt g" onclick="setSt('confirmed')"><span class="s-opt-icon">✅</span>Confirmed out</div>
+    <div class="s-opt a" onclick="setSt('checking')"><span class="s-opt-icon">❓</span>Need to check</div>
+    <div class="s-opt r" onclick="setSt('issue')"><span class="s-opt-icon">❌</span>Issue / problem</div>
+    <div class="s-opt"   onclick="openEdit()"><span class="s-opt-icon">✏️</span>Edit amount / name</div>
+    <div class="s-opt r" id="ctx-del" style="display:none" onclick="delDD()"><span class="s-opt-icon">🗑️</span>Delete</div>
+    <div class="s-opt gr" onclick="setSt('')"><span class="s-opt-icon">⭕</span>Reset status</div>
+  </div>
+</div>
+
+<!-- FORM SHEET -->
+
+<div class="form-bg" id="formBg" onclick="closeForm()">
+  <div class="form-sheet" onclick="event.stopPropagation()">
+    <div class="f-handle"></div>
+    <div class="f-title" id="f-title">Edit Payment</div>
+    <div class="f-field"><div class="f-lbl">Name</div><input class="f-inp" id="f-name" type="text" placeholder="e.g. Netflix"></div>
+    <div class="f-field"><div class="f-lbl">Amount £</div><input class="f-inp" id="f-amount" type="number" inputmode="decimal" placeholder="0.00"></div>
+    <div class="f-field"><div class="f-lbl">Due date</div><input class="f-inp" id="f-due" type="text" placeholder="e.g. 1st, 15th"></div>
+    <div class="f-field"><div class="f-lbl">Section</div>
+      <select class="f-inp" id="f-section">
+        <option>Home</option><option>Transport</option><option>Insurance</option>
+        <option>Debt</option><option>Savings</option><option>Other</option>
+      </select>
+    </div>
+    <button class="f-btn f-primary" id="f-save" onclick="saveForm()">Save</button>
+    <button class="f-btn f-cancel" onclick="closeForm()">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SHORT  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const INCOME = 5583;
+const DEBT_START = 20000;
+
+const DD_BASE = [
+  {id:'mortgage',    name:'Mortgage / Rent',   amount:812.37, due:'1st',  section:'Home'},
+  {id:'council',     name:'Council Tax',        amount:185.00, due:'1st',  section:'Home'},
+  {id:'electricity', name:'Electricity',        amount:104.00, due:'3rd',  section:'Home'},
+  {id:'gas',         name:'Gas / Oil',          amount:104.00, due:'3rd',  section:'Home'},
+  {id:'water',       name:'Water',              amount: 95.00, due:'5th',  section:'Home'},
+  {id:'internet',    name:'Internet',           amount: 30.00, due:'5th',  section:'Home'},
+  {id:'phone',       name:'Phone',              amount: 21.00, due:'7th',  section:'Home'},
+  {id:'tvlicence',   name:'TV Licence',         amount: 15.00, due:'7th',  section:'Home'},
+  {id:'homeins',     name:'Home Insurance',     amount: 20.00, due:'8th',  section:'Home'},
+  {id:'carpay',      name:'Car Payment',        amount:380.00, due:'1st',  section:'Transport'},
+  {id:'carloan',     name:'Car Loan',           amount:270.00, due:'1st',  section:'Transport'},
+  {id:'autoins',     name:'Auto Insurance',     amount: 59.00, due:'10th', section:'Transport'},
+  {id:'gapins',      name:'Gap Insurance',      amount: 14.14, due:'10th', section:'Transport'},
+  {id:'lifeins',     name:'Life Insurance',     amount:  9.89, due:'12th', section:'Insurance'},
+  {id:'healthins',   name:'Health Insurance',   amount: 20.00, due:'12th', section:'Insurance'},
+  {id:'union',       name:'Union',              amount:  4.24, due:'15th', section:'Other'},
+  {id:'kidsclubs',   name:'Kids Clubs',         amount: 25.00, due:'15th', section:'Other'},
+  {id:'nursery',     name:'Nursery',            amount:130.00, due:'15th', section:'Other'},
+  {id:'barclaycard', name:'Barclaycard (min)',  amount:150.00, due:'18th', section:'Debt'},
+  {id:'hsbc',        name:'HSBC (min)',         amount:407.82, due:'18th', section:'Debt'},
+  {id:'paypal',      name:'PayPal (min)',       amount:100.00, due:'20th', section:'Debt'},
+  {id:'lloyds',      name:'Lloyds (min)',       amount:313.86, due:'20th', section:'Debt'},
+  {id:'extradebt',   name:'Additional Debt',    amount: 28.32, due:'22nd', section:'Debt'},
+  {id:'savings',     name:'Savings Transfer',   amount:100.00, due:'25th', section:'Savings'},
+];
+
+const VARS = [
+  {id:'groceries', name:'Groceries', emoji:'🛒', budget:800},
+  {id:'fuel',      name:'Fuel',      emoji:'⛽', budget:123},
+  {id:'tunnel',    name:'Tunnel',    emoji:'🚗', budget: 10},
+  {id:'vet',       name:'Vet / Pet', emoji:'🐾', budget: 31},
+  {id:'medicine',  name:'Medicine',  emoji:'💊', budget: 11},
+  {id:'other',     name:'Other',     emoji:'📦', budget:  0},
+];
+
+const DEBTS = [
+  {id:'d_barclay',  name:'Barclaycard',   opening:10700},
+  {id:'d_amex',     name:'Amex',          opening: 4750},
+  {id:'d_halifax',  name:'Halifax',       opening: 9118.56},
+  {id:'d_paypal',   name:'PayPal',        opening: 2080.47},
+  {id:'d_overdraft',name:'Dan Overdraft', opening: 2300},
+  {id:'d_school',   name:'School Fees',   opening:  600},
+  {id:'d_very',     name:'Very',          opening:  253.98},
+  {id:'d_hsbc',     name:'HSBC',          opening:    0},
+  {id:'d_lloyds',   name:'Lloyds',        opening:    0},
+];
+
+// State
+function getPeriod() {
+  const d = new Date(), day = d.getDate(), m = d.getMonth();
+  return day >= 24 ? m : (m === 0 ? 11 : m - 1);
+}
+let period = getPeriod();
+let ctxId = null, formMode = 'edit', curScreen = 'overview';
+
+const ld = (k, def) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; } };
+const sv = (k, v)   => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+const pk = s => `ocb_${period}_${s}`;
+const gk = s => `ocb_g_${s}`;
+const allDD = () => [...DD_BASE, ...ld(gk('custom'), [])];
+
+// Nav
+function go(s) {
+  document.querySelectorAll('.screen').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+  document.getElementById('scr-' + s).classList.add('active');
+  document.getElementById('nav-' + s).classList.add('active');
+  document.getElementById('scrollArea').scrollTop = 0;
+  curScreen = s;
+  if (s === 'dd')   renderDD();
+  if (s === 'var')  renderVar();
+  if (s === 'debt') renderDebt();
+}
+
+function changePeriod(v) {
+  period = parseInt(v);
+  updatePeriodLabel();
+  renderAll();
+}
+
+function updatePeriodLabel() {
+  document.getElementById('periodDate').textContent =
+    `24 ${MONTHS[period]} – 23 ${MONTHS[(period+1)%12]}`;
+}
+
+function renderAll() {
+  renderOverview();
+  if (curScreen === 'dd')   renderDD();
+  if (curScreen === 'var')  renderVar();
+  if (curScreen === 'debt') renderDebt();
+}
+
+// Overview
+function renderOverview() {
+  const st = ld(pk('st'), {}), ov = ld(pk('ov'), {}), va = ld(pk('va'), {});
+  const dds = allDD();
+
+  const ddOut = dds.filter(d => st[d.id]==='confirmed')
+    .reduce((s,d) => s + parseFloat(ov[d.id]!==undefined ? ov[d.id] : d.amount), 0);
+  const varOut = VARS.reduce((s,v) => { const a=va[v.id]; return s+(a!==undefined&&a!==''?parseFloat(a):0); }, 0);
+  const out = ddOut + varOut, left = INCOME - out;
+
+  document.getElementById('ov-out').textContent  = out > 0 ? `£${Math.round(out).toLocaleString('en-GB')}` : '—';
+  const el = document.getElementById('ov-left');
+  el.textContent = out > 0 ? `£${Math.round(left).toLocaleString('en-GB')}` : '—';
+  el.className   = 'tile-val ' + (out===0?'b':left>=0?'g':'r');
+
+  const conf = dds.filter(d=>st[d.id]==='confirmed').length;
+  const confAmt = dds.filter(d=>st[d.id]==='confirmed')
+    .reduce((s,d)=>s+parseFloat(ov[d.id]!==undefined?ov[d.id]:d.amount),0);
+  document.getElementById('ov-dd-lbl').textContent = `${conf} of ${dds.length} confirmed`;
+  document.getElementById('ov-dd-amt').textContent = `£${Math.round(confAmt).toLocaleString('en-GB')}`;
+  document.getElementById('ov-dd-bar').style.width = (dds.length?(conf/dds.length)*100:0)+'%';
+
+  document.getElementById('ov-var').innerHTML = VARS.map(v => {
+    const a = va[v.id]!==undefined&&va[v.id]!==''?parseFloat(va[v.id]):null;
+    return `<div class="ov-vrow"><span>${v.emoji} ${v.name}</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:15px;color:${a===null?'var(--ink3)':a>v.budget?'var(--red)':'var(--green)'}">${a!==null?`£${a.toFixed(0)}`:'—'}</span></div>`;
+  }).join('');
+
+  // Debt
+  const bals = ld(pk('db'), {});
+  const hasAny = Object.keys(bals).some(k => bals[k]!==''&&bals[k]!==undefined);
+  const total  = hasAny ? DEBTS.reduce((s,d)=>{const v=bals[d.id];return s+(v!==undefined&&v!==''?parseFloat(v):0);},0) : DEBT_START;
+  const paid   = DEBT_START - total;
+  const pct    = Math.max(0,Math.min(100,(paid/DEBT_START)*100));
+  document.getElementById('ov-debt').textContent     = `£${Math.round(total).toLocaleString('en-GB')}`;
+  document.getElementById('ov-debt-bar').style.width = pct+'%';
+  document.getElementById('ov-debt-paid').textContent= `£${Math.max(0,Math.round(paid)).toLocaleString('en-GB')} paid`;
+  const mo = Math.ceil(total/1000);
+  const dt = new Date(); dt.setMonth(dt.getMonth()+mo);
+  document.getElementById('ov-debt-eta').textContent =
+    `At £1,000/month — free in ~${mo} months (${dt.toLocaleDateString('en-GB',{month:'long',year:'numeric'})})`;
+}
+
+// DD
+function renderDD() {
+  const st = ld(pk('st'),{}), ov = ld(pk('ov'),{}), dds = allDD();
+  const sections = [...new Set(dds.map(d=>d.section))];
+  let html = '';
+  sections.forEach(sec => {
+    html += `<div class="sec-lbl">${sec}</div>`;
+    dds.filter(d=>d.section===sec).forEach(dd => {
+      const s = st[dd.id]||'', amt = ov[dd.id]!==undefined?ov[dd.id]:dd.amount;
+      const icon = s==='confirmed'?'✓':s==='issue'?'✗':s==='checking'?'?':'';
+      html += `<div class="dd-row ${s}" id="ddr-${dd.id}"
+        onclick="tapDD('${dd.id}')"
+        ontouchstart="startPress('${dd.id}')" ontouchend="endPress()" ontouchmove="endPress()">
+        <div class="dd-circle">${icon}</div>
+        <div class="dd-info">
+          <div class="dd-name">${dd.name}</div>
+          <div class="dd-due">Due ~${dd.due}</div>
+        </div>
+        <div class="dd-right">
+          <div class="dd-amt">£${parseFloat(amt).toFixed(2)}</div>
+          <div class="dd-hint">hold to edit</div>
+        </div>
+      </div>`;
+    });
+  });
+  html += `<div class="add-row" onclick="openAdd()">＋ Add a payment</div>`;
+  document.getElementById('dd-body').innerHTML = html;
+  const conf = dds.filter(d=>st[d.id]==='confirmed').length;
+  document.getElementById('dd-done').style.display = (conf===dds.length&&dds.length>0)?'block':'none';
+}
+
+function tapDD(id) {
+  const st = ld(pk('st'),{});
+  st[id] = st[id]==='confirmed'?'':'confirmed';
+  sv(pk('st'),st);
+  renderDD(); renderOverview();
+  if (st[id]==='confirmed') toast('✓ Confirmed');
+}
+
+let pressTimer;
+function startPress(id){ pressTimer=setTimeout(()=>openCtx(id),500); }
+function endPress(){ clearTimeout(pressTimer); }
+
+function openCtx(id) {
+  ctxId = id;
+  const dd = allDD().find(d=>d.id===id);
+  document.getElementById('ctx-name').textContent = dd?dd.name:'Options';
+  document.getElementById('ctx-del').style.display = ld(gk('custom'),[]).some(d=>d.id===id)?'flex':'none';
+  document.getElementById('ctxBg').classList.add('open');
+}
+function closeCtx() { document.getElementById('ctxBg').classList.remove('open'); ctxId=null; }
+
+function setSt(s) {
+  if(!ctxId) return;
+  const st=ld(pk('st'),{}); st[ctxId]=s; sv(pk('st'),st);
+  closeCtx(); renderDD(); renderOverview();
+  toast({confirmed:'✓ Confirmed',checking:'❓ Flagged',issue:'✗ Issue noted','':'Reset'}[s]||'Updated');
+}
+
+function delDD() {
+  if(!ctxId) return;
+  sv(gk('custom'), ld(gk('custom'),[]).filter(d=>d.id!==ctxId));
+  closeCtx(); renderDD(); renderOverview(); toast('Deleted');
+}
+
+// Form
+function openEdit() {
+  closeCtx(); if(!ctxId) return;
+  formMode='edit';
+  const dd=allDD().find(d=>d.id===ctxId), ov=ld(pk('ov'),{});
+  document.getElementById('f-title').textContent = 'Edit Payment';
+  document.getElementById('f-save').textContent  = 'Save changes';
+  document.getElementById('f-name').value    = dd?dd.name:'';
+  document.getElementById('f-amount').value  = ov[ctxId]!==undefined?ov[ctxId]:(dd?dd.amount:'');
+  document.getElementById('f-due').value     = dd?dd.due:'';
+  document.getElementById('f-section').value = dd?dd.section:'Other';
+  document.getElementById('formBg').classList.add('open');
+}
+
+function openAdd() {
+  formMode='add'; ctxId=null;
+  document.getElementById('f-title').textContent = 'Add Payment';
+  document.getElementById('f-save').textContent  = 'Add payment';
+  ['f-name','f-amount','f-due'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-section').value='Other';
+  document.getElementById('formBg').classList.add('open');
+}
+
+function closeForm() { document.getElementById('formBg').classList.remove('open'); }
+
+function saveForm() {
+  const name=document.getElementById('f-name').value.trim();
+  const amount=parseFloat(document.getElementById('f-amount').value)||0;
+  const due=document.getElementById('f-due').value.trim()||'—';
+  const section=document.getElementById('f-section').value;
+  if(formMode==='add') {
+    if(!name){toast('Please enter a name');return;}
+    const custom=ld(gk('custom'),[]);
+    custom.push({id:'c_'+Date.now(),name,amount,due,section});
+    sv(gk('custom'),custom); toast('✓ Payment added');
+  } else {
+    const ov=ld(pk('ov'),{}); ov[ctxId]=amount; sv(pk('ov'),ov);
+    const custom=ld(gk('custom'),[]); const idx=custom.findIndex(d=>d.id===ctxId);
+    if(idx!==-1){custom[idx]={...custom[idx],name,amount,due,section};sv(gk('custom'),custom);}
+    toast('✓ Updated');
+  }
+  closeForm(); renderDD(); renderOverview();
+}
+
+// Variable
+function renderVar() {
+  const va=ld(pk('va'),{});
+  let html='', tot=0, bud=0;
+  VARS.forEach(v => {
+    const a=va[v.id]!==undefined?va[v.id]:'';
+    const diff=a!==''?v.budget-parseFloat(a):null;
+    bud+=v.budget; if(a!=='')tot+=parseFloat(a);
+    const dh=diff!==null?`<div class="var-diff ${diff<0?'over':'under'}">${diff<0?'-':'+'}£${Math.abs(diff).toFixed(0)}</div>`:'';
+    html+=`<div class="var-row">
+      <div class="var-emoji">${v.emoji}</div>
+      <div class="var-info"><div class="var-name">${v.name}</div><div class="var-bud">Budget: £${v.budget}</div></div>
+      <div class="var-right">
+        <input class="var-input" type="number" inputmode="decimal" placeholder="£0" value="${a}"
+               onchange="saveVar('${v.id}',this.value)" onblur="saveVar('${v.id}',this.value)">
+        ${dh}
+      </div>
+    </div>`;
+  });
+  document.getElementById('var-list').innerHTML=html;
+  document.getElementById('var-total').textContent=tot>0?`£${tot.toFixed(0)}`:'—';
+  document.getElementById('var-bud').textContent=`£${bud}`;
+}
+
+function saveVar(id,val) {
+  const va=ld(pk('va'),{}); va[id]=val===''?'':parseFloat(val)||0;
+  sv(pk('va'),va); renderVar(); renderOverview();
+}
+
+// Debt
+function renderDebt() {
+  const monthly=[];
+  for(let m=0;m<12;m++){
+    const b=ld(`ocb_${m}_db`,{});
+    if(Object.keys(b).length) monthly[m]=DEBTS.reduce((s,d)=>{const v=b[d.id];return s+(v!==undefined&&v!==''?parseFloat(v):0);},0);
+  }
+  const bals=ld(pk('db'),{});
+  const hasAny=Object.keys(bals).some(k=>bals[k]!==''&&bals[k]!==undefined);
+  const total=hasAny?DEBTS.reduce((s,d)=>{const v=bals[d.id];return s+(v!==undefined&&v!==''?parseFloat(v):0);},0):DEBT_START;
+
+  document.getElementById('dh-amt').textContent=`£${Math.round(total).toLocaleString('en-GB')}`;
+  document.getElementById('dh-eta').textContent=`~${Math.ceil(total/1000)} months to clear`;
+
+  document.getElementById('debt-grid').innerHTML=SHORT.map((m,i)=>{
+    const has=monthly[i]!==undefined;
+    const prev=i>0?(monthly[i-1]||DEBT_START):DEBT_START;
+    const red=has?prev-monthly[i]:null;
+    return `<div class="d-dot ${has?'has':''}">
+      <div class="d-dot-lbl">${m}</div>
+      <div class="d-dot-val">${has&&red!==null?`-£${Math.round(red)}`:'—'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('debt-list').innerHTML=DEBTS.map(d=>{
+    const v=bals[d.id]!==undefined?bals[d.id]:'';
+    return `<div class="debt-row">
+      <div class="debt-row-info">
+        <div class="debt-row-name">${d.name}</div>
+        <div class="debt-row-open">Opening: £${d.opening.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+      </div>
+      <input class="debt-input" type="number" inputmode="decimal" placeholder="£ now" value="${v}"
+             onchange="saveDebt('${d.id}',this.value)" onblur="saveDebt('${d.id}',this.value)">
+    </div>`;
+  }).join('');
+
+  renderOverview();
+}
+
+function saveDebt(id,val) {
+  const b=ld(pk('db'),{}); b[id]=val===''?'':parseFloat(val)||0;
+  sv(pk('db'),b); renderDebt();
+}
+
+// Toast
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// Init
+document.getElementById('periodSel').value = period;
+updatePeriodLabel();
+renderAll();
+</script>
+
+</body>
+</html>
