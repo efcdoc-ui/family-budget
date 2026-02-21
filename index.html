@@ -3,1480 +3,704 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>O'Connor Family Budget</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>O'Connor Budget</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #0f1923;
-    --ink2: #2a3a4a;
-    --ink3: #5a6a7a;
-    --paper: #f5f0e8;
-    --paper2: #ede8dc;
-    --paper3: #e0d9cc;
-    --green: #2d6a4f;
-    --green-l: #d8f3dc;
-    --green-m: #74c69d;
-    --red: #c1121f;
-    --red-l: #fce4e4;
-    --amber: #e76f00;
-    --amber-l: #fff3e0;
-    --blue: #1a4a8a;
-    --blue-l: #e8f0fb;
-    --accent: #c9a84c;
-    --card: #ffffff;
-    --shadow: 0 2px 12px rgba(15,25,35,0.08);
-    --shadow-lg: 0 8px 32px rgba(15,25,35,0.12);
-    --r: 14px;
-  }
+:root {
+  --ink: #0f1923; --ink2: #2a3a4a; --ink3: #7a8a9a;
+  --paper: #f4f0e8; --paper2: #e8e2d8; --paper3: #d8d0c4;
+  --green: #2d6a4f; --green-l: #d8f3dc; --green-m: #52b788;
+  --red: #b5192b; --red-l: #fce8e8;
+  --amber: #d4760a; --amber-l: #fff0d0;
+  --blue: #1a4a8a; --blue-l: #e4edf8;
+  --gold: #c9a84c; --white: #ffffff;
+  --nav-h: 72px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); height: 100%; }
 
-- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+.app { display: flex; flex-direction: column; height: 100%; min-height: 100vh; }
 
-body {
-font-family: ‘DM Sans’, sans-serif;
-background: var(–paper);
-color: var(–ink);
-min-height: 100vh;
-padding-bottom: 90px;
+/* TOP BAR */
+.topbar { background: var(–ink); padding: 16px 16px 12px; flex-shrink: 0; }
+.topbar-row { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: ‘DM Serif Display’, serif; font-size: 20px; color: var(–gold); }
+.period-pill {
+background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 500;
+padding: 5px 11px; border-radius: 20px; cursor: pointer; outline: none;
+-webkit-appearance: none;
+}
+.period-date { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 6px; }
+
+/* SCROLL */
+.scroll-area {
+flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+padding: 14px 14px 100px;
 }
 
-/* ── HEADER ── */
-.header {
-background: var(–ink);
-padding: 20px 20px 0;
-position: -webkit-sticky;
-position: sticky;
-top: 0;
-z-index: 100;
--webkit-transform: translateZ(0);
-transform: translateZ(0);
-}
-
-.header-top {
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin-bottom: 16px;
-}
-
-.logo {
-font-family: ‘DM Serif Display’, serif;
-font-size: 22px;
-color: var(–accent);
-letter-spacing: -0.5px;
-}
-
-.month-select {
-background: rgba(255,255,255,0.1);
-border: 1px solid rgba(255,255,255,0.2);
-color: white;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 13px;
-font-weight: 500;
-padding: 6px 12px;
-border-radius: 20px;
-outline: none;
-cursor: pointer;
-}
-
-.period-label {
-font-size: 11px;
-color: rgba(255,255,255,0.45);
-margin-bottom: 10px;
-margin-top: -10px;
-letter-spacing: 0.3px;
-}
-
-.nav-tabs {
-display: flex;
-gap: 0;
-overflow-x: auto;
-scrollbar-width: none;
-}
-.nav-tabs::-webkit-scrollbar { display: none; }
-
-.tab {
-flex: 0 0 auto;
-padding: 10px 18px;
-font-size: 13px;
-font-weight: 500;
-color: rgba(255,255,255,0.5);
-cursor: pointer;
-border-bottom: 2px solid transparent;
-transition: all 0.2s;
-white-space: nowrap;
-}
-
-.tab.active {
-color: var(–accent);
-border-bottom-color: var(–accent);
-}
-
-/* ── CONTENT ── */
-.content { padding: 16px; display: none; }
-.content.active { display: block; }
-
-/* ── CARDS ── */
-.card {
-background: var(–card);
-border-radius: var(–r);
-box-shadow: var(–shadow);
-padding: 16px;
-margin-bottom: 12px;
-}
-
-.card-title {
-font-family: ‘DM Serif Display’, serif;
-font-size: 16px;
-color: var(–ink);
-margin-bottom: 12px;
-display: flex;
-align-items: center;
-gap: 8px;
-}
-
-.card-title span { font-size: 18px; }
-
-/* ── SUMMARY STRIP ── */
-.summary-strip {
-display: grid;
-grid-template-columns: 1fr 1fr 1fr;
-gap: 10px;
-margin-bottom: 16px;
-}
-
-.summary-tile {
-background: var(–card);
-border-radius: var(–r);
-padding: 14px 10px;
-text-align: center;
-box-shadow: var(–shadow);
-}
-
-.summary-tile .label {
-font-size: 10px;
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 0.8px;
-color: var(–ink3);
-margin-bottom: 4px;
-}
-
-.summary-tile .amount {
-font-family: ‘DM Serif Display’, serif;
-font-size: 18px;
-font-weight: 400;
-}
-
-.tile-income .amount { color: var(–green); }
-.tile-out .amount { color: var(–red); }
-.tile-remaining .amount { color: var(–blue); }
-.tile-remaining.positive .amount { color: var(–green); }
-.tile-remaining.negative .amount { color: var(–red); }
-
-/* ── DD CHECKLIST ── */
-.dd-section-label {
-font-size: 10px;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 1px;
-color: var(–ink3);
-padding: 10px 0 6px;
-}
-
-.dd-item {
-display: flex;
-align-items: center;
-gap: 12px;
-padding: 11px 14px;
-border-radius: 10px;
-margin-bottom: 6px;
-background: var(–paper);
-transition: all 0.25s;
-cursor: pointer;
-border: 1.5px solid transparent;
-}
-
-.dd-item.confirmed {
-background: var(–green-l);
-border-color: var(–green-m);
-}
-
-.dd-item.issue {
-background: var(–red-l);
-border-color: var(–red);
-}
-
-.dd-check {
-width: 26px;
-height: 26px;
-border-radius: 50%;
-border: 2px solid var(–paper3);
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
-font-size: 13px;
-transition: all 0.2s;
-background: white;
-}
-
-.dd-item.confirmed .dd-check {
-background: var(–green);
-border-color: var(–green);
-color: white;
-}
-
-.dd-item.issue .dd-check {
-background: var(–red);
-border-color: var(–red);
-color: white;
-}
-
-.dd-info { flex: 1; min-width: 0; }
-
-.dd-name {
-font-size: 14px;
-font-weight: 500;
-color: var(–ink);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.dd-item.confirmed .dd-name { color: var(–green); }
-
-.dd-due {
-font-size: 11px;
-color: var(–ink3);
-margin-top: 1px;
-}
-
-.dd-amount {
-font-family: ‘DM Serif Display’, serif;
-font-size: 16px;
-color: var(–ink);
-flex-shrink: 0;
-}
-
-.dd-item.confirmed .dd-amount { color: var(–green); }
-
-/* Long press menu */
-.ctx-menu {
-display: none;
-position: fixed;
-bottom: 100px;
-left: 50%;
-transform: translateX(-50%);
-background: var(–ink);
-border-radius: 14px;
-padding: 6px;
-z-index: 999;
-box-shadow: var(–shadow-lg);
-min-width: 200px;
-}
-
-.ctx-menu.show { display: block; }
-
-.ctx-option {
-display: flex;
-align-items: center;
-gap: 10px;
-padding: 12px 16px;
-color: white;
-font-size: 14px;
-font-weight: 500;
-border-radius: 10px;
-cursor: pointer;
-transition: background 0.15s;
-}
-
-.ctx-option:hover { background: rgba(255,255,255,0.1); }
-.ctx-option .icon { font-size: 18px; width: 24px; text-align: center; }
-.ctx-option.green { color: var(–green-m); }
-.ctx-option.red { color: #ff6b6b; }
-.ctx-option.amber { color: var(–accent); }
-
-.ctx-overlay {
-display: none;
-position: fixed;
-inset: 0;
-z-index: 998;
-}
-.ctx-overlay.show { display: block; }
-
-/* ── PROGRESS BAR ── */
-.progress-wrap { margin-top: 8px; }
-
-.progress-bar-bg {
-height: 8px;
-background: var(–paper2);
-border-radius: 4px;
-overflow: hidden;
-}
-
-.progress-bar-fill {
-height: 100%;
-border-radius: 4px;
-transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-background: var(–green);
-}
-
-.progress-label {
-display: flex;
-justify-content: space-between;
-font-size: 11px;
-color: var(–ink3);
-margin-top: 4px;
-}
-
-/* ── VARIABLE SPEND ── */
-.var-item {
-display: flex;
-align-items: center;
-gap: 10px;
-padding: 10px 0;
-border-bottom: 1px solid var(–paper2);
-}
-
-.var-item:last-child { border-bottom: none; }
-
-.var-emoji { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
-
-.var-info { flex: 1; }
-
-.var-name { font-size: 14px; font-weight: 500; }
-
-.var-budget { font-size: 11px; color: var(–ink3); margin-top: 1px; }
-
-.var-input-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-
-.var-input {
-width: 90px;
-text-align: right;
-border: 1.5px solid var(–paper3);
-border-radius: 8px;
-padding: 6px 10px;
-font-family: ‘DM Serif Display’, serif;
-font-size: 16px;
-color: var(–ink);
-background: var(–paper);
-outline: none;
-transition: border-color 0.2s;
-}
-
-.var-input:focus { border-color: var(–blue); background: white; }
-
-.var-diff {
-font-size: 11px;
-font-weight: 600;
-}
-
-.var-diff.over { color: var(–red); }
-.var-diff.under { color: var(–green); }
-
-/* ── DEBT TRACKER ── */
-.debt-total-hero {
-background: linear-gradient(135deg, var(–ink) 0%, var(–ink2) 100%);
-border-radius: var(–r);
-padding: 20px;
-margin-bottom: 12px;
-position: relative;
-overflow: hidden;
-}
-
-.debt-total-hero::before {
-content: ‘’;
-position: absolute;
-right: -20px;
-top: -20px;
-width: 100px;
-height: 100px;
-border-radius: 50%;
-background: rgba(201,168,76,0.15);
-}
-
-.debt-hero-label {
-font-size: 11px;
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 1px;
-color: rgba(255,255,255,0.5);
-margin-bottom: 4px;
-}
-
-.debt-hero-amount {
-font-family: ‘DM Serif Display’, serif;
-font-size: 38px;
-color: white;
-letter-spacing: -1px;
-}
-
-.debt-hero-sub {
-font-size: 12px;
-color: rgba(255,255,255,0.5);
-margin-top: 6px;
-}
-
-.debt-hero-sub strong {
-color: var(–green-m);
-}
-
-.debt-monthly-grid {
-display: grid;
-grid-template-columns: repeat(6, 1fr);
-gap: 4px;
-margin-top: 14px;
-}
-
-.debt-month-dot {
-background: rgba(255,255,255,0.1);
-border-radius: 6px;
-padding: 5px 2px;
-text-align: center;
-}
-
-.debt-month-dot.has-data {
-background: rgba(116,198,157,0.25);
-}
-
-.debt-month-dot .dot-label {
-font-size: 9px;
-color: rgba(255,255,255,0.5);
-font-weight: 600;
-}
-
-.debt-month-dot .dot-val {
-font-size: 10px;
-color: var(–green-m);
-font-weight: 600;
-margin-top: 2px;
-}
-
-.debt-item {
-display: flex;
-align-items: center;
-padding: 12px 0;
-border-bottom: 1px solid var(–paper2);
-gap: 12px;
-}
-
-.debt-item:last-child { border-bottom: none; }
-
-.debt-item-info { flex: 1; }
-
-.debt-item-name { font-size: 14px; font-weight: 500; }
-
-.debt-item-balance { font-size: 11px; color: var(–ink3); margin-top: 2px; }
-
-.debt-item-input {
-width: 100px;
-text-align: right;
-border: 1.5px solid var(–paper3);
-border-radius: 8px;
-padding: 6px 10px;
-font-family: ‘DM Serif Display’, serif;
-font-size: 15px;
-color: var(–ink);
-background: var(–paper);
-outline: none;
-transition: border-color 0.2s;
-}
-
-.debt-item-input:focus { border-color: var(–blue); background: white; }
-
-/* ── BOTTOM NAV ── */
+/* BOTTOM NAV */
 .bottom-nav {
-position: fixed;
-bottom: 0;
-left: 0;
-right: 0;
-background: white;
-border-top: 1px solid var(–paper2);
-display: flex;
-padding: 8px 0 20px;
-z-index: 100;
-box-shadow: 0 -4px 20px rgba(15,25,35,0.08);
+position: fixed; bottom: 0; left: 0; right: 0;
+background: var(–white); border-top: 1px solid var(–paper2);
+display: flex; padding-bottom: env(safe-area-inset-bottom, 0px);
+z-index: 200; box-shadow: 0 -2px 16px rgba(15,25,35,0.08);
+}
+.nav-item {
+flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+padding: 10px 4px 8px; cursor: pointer; color: var(–ink3);
+font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+border: none; background: none; -webkit-appearance: none; font-family: ‘DM Sans’, sans-serif;
+}
+.nav-item .ni { font-size: 20px; line-height: 1.2; }
+.nav-item.active { color: var(–blue); }
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* CARDS */
+.card { background: var(–white); border-radius: 14px; box-shadow: 0 1px 8px rgba(15,25,35,0.07); padding: 15px; margin-bottom: 12px; }
+.card-title { font-family: ‘DM Serif Display’, serif; font-size: 17px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+/* TILES */
+.tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.tile { background: var(–white); border-radius: 12px; padding: 12px 8px; text-align: center; box-shadow: 0 1px 8px rgba(15,25,35,0.07); }
+.tile-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(–ink3); margin-bottom: 4px; }
+.tile-val { font-family: ‘DM Serif Display’, serif; font-size: 17px; }
+.g { color: var(–green); } .r { color: var(–red); } .b { color: var(–blue); }
+
+/* PROGRESS */
+.prog-bg { height: 7px; background: var(–paper2); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+.prog-fill { height: 100%; border-radius: 4px; background: var(–green); transition: width 0.5s ease; }
+.prog-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(–ink3); }
+
+/* DD */
+.sec-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(–ink3); padding: 10px 0 5px; }
+.dd-row {
+display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+border-radius: 10px; margin-bottom: 5px; background: var(–paper);
+border: 1.5px solid transparent; cursor: pointer;
+-webkit-user-select: none; user-select: none;
+}
+.dd-row.confirmed { background: var(–green-l); border-color: var(–green-m); }
+.dd-row.issue     { background: var(–red-l);   border-color: var(–red); }
+.dd-row.checking  { background: var(–amber-l); border-color: var(–amber); }
+.dd-circle {
+width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(–paper3);
+background: var(–white); display: flex; align-items: center; justify-content: center;
+font-size: 12px; flex-shrink: 0;
+}
+.dd-row.confirmed .dd-circle { background: var(–green); border-color: var(–green); color: white; }
+.dd-row.issue .dd-circle     { background: var(–red);   border-color: var(–red);   color: white; }
+.dd-row.checking .dd-circle  { background: var(–amber); border-color: var(–amber); color: white; }
+.dd-info { flex: 1; min-width: 0; }
+.dd-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dd-row.confirmed .dd-name { color: var(–green); }
+.dd-due { font-size: 11px; color: var(–ink3); margin-top: 1px; }
+.dd-right { text-align: right; flex-shrink: 0; }
+.dd-amt { font-family: ‘DM Serif Display’, serif; font-size: 15px; }
+.dd-row.confirmed .dd-amt { color: var(–green); }
+.dd-hint { font-size: 9px; color: var(–ink3); margin-top: 1px; }
+.add-row {
+display: flex; align-items: center; justify-content: center; gap: 8px;
+width: 100%; padding: 11px; margin-top: 6px;
+background: var(–blue-l); border: 1.5px dashed var(–blue);
+border-radius: 10px; color: var(–blue); font-size: 14px; font-weight: 600; cursor: pointer;
 }
 
-.nav-btn {
-flex: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 3px;
-padding: 6px 0;
-cursor: pointer;
-color: var(–ink3);
-transition: color 0.2s;
-font-size: 10px;
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 0.5px;
+/* VARIABLE */
+.var-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(–paper2); }
+.var-row:last-of-type { border-bottom: none; }
+.var-emoji { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.var-info { flex: 1; }
+.var-name { font-size: 14px; font-weight: 500; }
+.var-bud { font-size: 11px; color: var(–ink3); margin-top: 1px; }
+.var-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.var-input {
+width: 88px; text-align: right; border: 1.5px solid var(–paper3); border-radius: 8px;
+padding: 6px 9px; font-family: ‘DM Serif Display’, serif; font-size: 16px;
+color: var(–ink); background: var(–paper); outline: none;
 }
+.var-input:focus { border-color: var(–blue); background: var(–white); }
+.var-diff { font-size: 11px; font-weight: 600; }
+.var-diff.over { color: var(–red); } .var-diff.under { color: var(–green); }
 
-.nav-btn .nav-icon { font-size: 22px; }
-.nav-btn.active { color: var(–blue); }
+/* DEBT HERO */
+.debt-hero {
+background: linear-gradient(135deg, var(–ink), var(–ink2));
+border-radius: 14px; padding: 18px; margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.debt-hero::before {
+content:’’; position: absolute; right: -15px; top: -15px;
+width: 80px; height: 80px; border-radius: 50%; background: rgba(201,168,76,0.15);
+}
+.dh-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
+.dh-amt { font-family: ‘DM Serif Display’, serif; font-size: 36px; color: white; letter-spacing: -1px; }
+.dh-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 5px; }
+.dh-sub strong { color: var(–green-m); }
+.debt-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px; margin-top: 14px; }
+.d-dot { background: rgba(255,255,255,0.08); border-radius: 6px; padding: 5px 2px; text-align: center; }
+.d-dot.has { background: rgba(82,183,136,0.22); }
+.d-dot-lbl { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 600; }
+.d-dot-val { font-size: 9px; color: var(–green-m); font-weight: 600; margin-top: 2px; }
+.debt-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(–paper2); }
+.debt-row:last-child { border-bottom: none; }
+.debt-row-info { flex: 1; }
+.debt-row-name { font-size: 14px; font-weight: 500; }
+.debt-row-open { font-size: 11px; color: var(–ink3); margin-top: 2px; }
+.debt-input {
+width: 100px; text-align: right; border: 1.5px solid var(–paper3); border-radius: 8px;
+padding: 7px 10px; font-family: ‘DM Serif Display’, serif; font-size: 15px;
+background: var(–paper); outline: none;
+}
+.debt-input:focus { border-color: var(–blue); background: var(–white); }
 
-/* ── TOAST ── */
+/* CONTEXT SHEET */
+.sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(15,25,35,0.55); z-index: 300; }
+.sheet-overlay.open { display: block; }
+.sheet {
+position: fixed; bottom: 0; left: 0; right: 0; background: var(–white);
+border-radius: 20px 20px 0 0; padding: 10px 14px 32px;
+transform: translateY(100%); transition: transform 0.28s ease; z-index: 301;
+}
+.sheet-overlay.open .sheet { transform: translateY(0); }
+.sheet-handle { width: 36px; height: 4px; background: var(–paper3); border-radius: 2px; margin: 0 auto 16px; }
+.sheet-title { font-family: ‘DM Serif Display’, serif; font-size: 18px; margin-bottom: 14px; }
+.s-opt {
+display: flex; align-items: center; gap: 12px; padding: 13px 12px; border-radius: 10px;
+font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 3px;
+}
+.s-opt:active { background: var(–paper); }
+.s-opt-icon { font-size: 20px; width: 28px; text-align: center; }
+.s-opt.g { color: var(–green); } .s-opt.a { color: var(–amber); }
+.s-opt.r { color: var(–red); }   .s-opt.gr { color: var(–ink3); }
+
+/* FORM SHEET */
+.form-bg { display: none; position: fixed; inset: 0; background: rgba(15,25,35,0.55); z-index: 400; }
+.form-bg.open { display: block; }
+.form-sheet {
+position: fixed; bottom: 0; left: 0; right: 0; background: var(–white);
+border-radius: 20px 20px 0 0; padding: 10px 16px 36px;
+transform: translateY(100%); transition: transform 0.28s ease; z-index: 401;
+max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.form-bg.open .form-sheet { transform: translateY(0); }
+.f-handle { width: 36px; height: 4px; background: var(–paper3); border-radius: 2px; margin: 0 auto 18px; }
+.f-title { font-family: ‘DM Serif Display’, serif; font-size: 20px; margin-bottom: 16px; }
+.f-field { margin-bottom: 13px; }
+.f-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(–ink3); margin-bottom: 5px; }
+.f-inp {
+width: 100%; padding: 12px 13px; border: 1.5px solid var(–paper3); border-radius: 10px;
+font-family: ‘DM Sans’, sans-serif; font-size: 16px; color: var(–ink); background: var(–paper);
+outline: none; -webkit-appearance: none;
+}
+.f-inp:focus { border-color: var(–blue); background: var(–white); }
+.f-btn {
+width: 100%; padding: 14px; border: none; border-radius: 12px;
+font-family: ‘DM Sans’, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer;
+-webkit-appearance: none; margin-top: 5px;
+}
+.f-primary { background: var(–ink); color: white; }
+.f-cancel  { background: var(–paper2); color: var(–ink3); margin-top: 8px; }
+
+/* TOAST */
 .toast {
-position: fixed;
-top: -60px;
-left: 50%;
-transform: translateX(-50%);
-background: var(–ink);
-color: white;
-padding: 10px 20px;
-border-radius: 20px;
-font-size: 13px;
-font-weight: 500;
-transition: top 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-z-index: 9999;
-white-space: nowrap;
+position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
+background: var(–ink); color: white; padding: 9px 18px; border-radius: 20px;
+font-size: 13px; font-weight: 500; z-index: 999; white-space: nowrap;
+box-shadow: 0 4px 16px rgba(15,25,35,0.25); transition: top 0.3s ease;
 }
+.toast.show { top: 20px; }
 
-.toast.show { top: 80px; }
-
-/* ── MISC ── */
-.section-divider {
-display: flex;
-align-items: center;
-gap: 8px;
-margin: 16px 0 8px;
+/* ALL DONE */
+.all-done-card {
+background: linear-gradient(135deg, var(–green), #40916c);
+border-radius: 14px; padding: 16px; color: white; text-align: center; margin-bottom: 12px;
 }
+.ad-big { font-family: ‘DM Serif Display’, serif; font-size: 22px; }
+.ad-sub { font-size: 12px; opacity: 0.75; margin-top: 4px; }
 
-.section-divider-line { flex: 1; height: 1px; background: var(–paper2); }
-
-.section-divider-label {
-font-size: 10px;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 1px;
-color: var(–ink3);
-}
-
-.badge {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-background: var(–green);
-color: white;
-font-size: 10px;
-font-weight: 700;
-width: 18px;
-height: 18px;
-border-radius: 50%;
-margin-left: auto;
-}
-
-.badge.amber { background: var(–amber); }
-
-.all-done-banner {
-background: linear-gradient(135deg, var(–green) 0%, #40916c 100%);
-border-radius: var(–r);
-padding: 16px;
-color: white;
-text-align: center;
-margin-bottom: 12px;
-}
-
-.all-done-banner .big { font-family: ‘DM Serif Display’, serif; font-size: 22px; }
-.all-done-banner .sub { font-size: 12px; opacity: 0.8; margin-top: 4px; }
-
-/* ── EDIT MODAL ── */
-.modal-overlay {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(15,25,35,0.6);
-z-index: 500;
-backdrop-filter: blur(2px);
-}
-.modal-overlay.show { display: flex; align-items: flex-end; }
-
-.modal {
-background: white;
-border-radius: 20px 20px 0 0;
-padding: 24px 20px 40px;
-width: 100%;
-transform: translateY(100%);
-transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
-}
-.modal-overlay.show .modal { transform: translateY(0); }
-
-.modal-handle {
-width: 36px;
-height: 4px;
-background: var(–paper3);
-border-radius: 2px;
-margin: 0 auto 20px;
-}
-
-.modal-title {
-font-family: ‘DM Serif Display’, serif;
-font-size: 20px;
-margin-bottom: 16px;
-}
-
-.modal-field { margin-bottom: 14px; }
-
-.modal-label {
-font-size: 11px;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.8px;
-color: var(–ink3);
-margin-bottom: 6px;
-}
-
-.modal-input {
-width: 100%;
-padding: 12px 14px;
-border: 1.5px solid var(–paper3);
-border-radius: 10px;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-color: var(–ink);
-background: var(–paper);
-outline: none;
-transition: border-color 0.2s;
-}
-.modal-input:focus { border-color: var(–blue); background: white; }
-
-.modal-btn {
-width: 100%;
-padding: 14px;
-border: none;
-border-radius: 12px;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 15px;
-font-weight: 600;
-cursor: pointer;
-margin-top: 6px;
-transition: opacity 0.15s;
-}
-.modal-btn:active { opacity: 0.8; }
-.modal-btn-primary { background: var(–ink); color: white; }
-.modal-btn-danger  { background: var(–red-l); color: var(–red); margin-top: 8px; }
-.modal-btn-cancel  { background: var(–paper2); color: var(–ink3); margin-top: 8px; }
-
-/* ── ADD DD BUTTON ── */
-.add-dd-btn {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-width: 100%;
-padding: 12px;
-margin-top: 8px;
-background: var(–blue-l);
-border: 1.5px dashed var(–blue);
-border-radius: 10px;
-color: var(–blue);
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: background 0.15s;
-}
-.add-dd-btn:active { background: #d0e4f7; }
-
-/* edit pencil on DD amount */
-.dd-amount-wrap {
-display: flex;
-flex-direction: column;
-align-items: flex-end;
-flex-shrink: 0;
-}
-.dd-edit-hint {
-font-size: 9px;
-color: var(–ink3);
-margin-top: 2px;
-opacity: 0.7;
-}
-
+/* OV VAR */
+.ov-vrow { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(–paper2); font-size: 13px; }
+.ov-vrow:last-child { border-bottom: none; }
 </style>
+
 </head>
 <body>
+<div class="app">
 
-<div class="header">
-  <div class="header-top">
-    <div class="logo">O'Connor Budget</div>
-    <select class="month-select" id="monthSelect" onchange="changeMonth(this.value)">
-      <option value="0">24 Jan – 23 Feb</option>
-      <option value="1">24 Feb – 23 Mar</option>
-      <option value="2">24 Mar – 23 Apr</option>
-      <option value="3">24 Apr – 23 May</option>
-      <option value="4">24 May – 23 Jun</option>
-      <option value="5">24 Jun – 23 Jul</option>
-      <option value="6">24 Jul – 23 Aug</option>
-      <option value="7">24 Aug – 23 Sep</option>
-      <option value="8">24 Sep – 23 Oct</option>
-      <option value="9">24 Oct – 23 Nov</option>
-      <option value="10">24 Nov – 23 Dec</option>
-      <option value="11">24 Dec – 23 Jan</option>
-    </select>
-  </div>
-  <div class="nav-tabs">
-    <div class="tab active" onclick="showTab('overview')">Overview</div>
-    <div class="tab" onclick="showTab('checklist')">Direct Debits</div>
-    <div class="tab" onclick="showTab('variable')">Variable</div>
-    <div class="tab" onclick="showTab('debt')">Debt</div>
-  </div>
-  <div class="period-label" id="periodLabel"></div>
-</div>
-
-<!-- CONTEXT MENU -->
-
-<div class="ctx-overlay" id="ctxOverlay" onclick="closeCtxMenu()"></div>
-<div class="ctx-menu" id="ctxMenu">
-  <div class="ctx-option green" onclick="setDDStatus('confirmed')">
-    <span class="icon">✓</span> Confirmed out
-  </div>
-  <div class="ctx-option amber" onclick="setDDStatus('check')">
-    <span class="icon">?</span> Need to check
-  </div>
-  <div class="ctx-option red" onclick="setDDStatus('issue')">
-    <span class="icon">✗</span> Issue / problem
-  </div>
-  <div class="ctx-option" onclick="openEditModal(ctxId); closeCtxMenu();">
-    <span class="icon">✏️</span> Edit amount / name
-  </div>
-  <div class="ctx-option red" onclick="deleteDD(ctxId); closeCtxMenu();" id="ctx-delete-btn">
-    <span class="icon">🗑</span> Delete
-  </div>
-  <div class="ctx-option" onclick="setDDStatus('')">
-    <span class="icon">○</span> Reset status
-  </div>
-</div>
-
-<!-- EDIT DD MODAL -->
-
-<div class="modal-overlay" id="editModal" onclick="closeEditModal(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="editModalTitle">Edit Direct Debit</div>
-    <div class="modal-field">
-      <div class="modal-label">Name</div>
-      <input class="modal-input" id="editName" type="text" placeholder="e.g. Car Loan">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Amount £</div>
-      <input class="modal-input" id="editAmount" type="number" inputmode="decimal" placeholder="0.00">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Due date (approx)</div>
-      <input class="modal-input" id="editDue" type="text" placeholder="e.g. 1st, 15th">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Section</div>
-      <select class="modal-input" id="editSection">
-        <option>Home</option>
-        <option>Transport</option>
-        <option>Insurance</option>
-        <option>Debt</option>
-        <option>Savings</option>
-        <option>Other</option>
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="logo">O'Connor Budget</div>
+      <select class="period-pill" id="periodSel" onchange="changePeriod(this.value)">
+        <option value="0">Jan period</option><option value="1">Feb period</option>
+        <option value="2">Mar period</option><option value="3">Apr period</option>
+        <option value="4">May period</option><option value="5">Jun period</option>
+        <option value="6">Jul period</option><option value="7">Aug period</option>
+        <option value="8">Sep period</option><option value="9">Oct period</option>
+        <option value="10">Nov period</option><option value="11">Dec period</option>
       </select>
     </div>
-    <button class="modal-btn modal-btn-primary" onclick="saveEditModal()">Save changes</button>
-    <button class="modal-btn modal-btn-cancel" onclick="closeEditModal()">Cancel</button>
-  </div>
-</div>
-
-<!-- ADD DD MODAL -->
-
-<div class="modal-overlay" id="addModal" onclick="closeAddModal(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Add Direct Debit</div>
-    <div class="modal-field">
-      <div class="modal-label">Name</div>
-      <input class="modal-input" id="addName" type="text" placeholder="e.g. Netflix">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Amount £</div>
-      <input class="modal-input" id="addAmount" type="number" inputmode="decimal" placeholder="0.00">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Due date (approx)</div>
-      <input class="modal-input" id="addDue" type="text" placeholder="e.g. 1st, 15th">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Section</div>
-      <select class="modal-input" id="addSection">
-        <option>Home</option>
-        <option>Transport</option>
-        <option>Insurance</option>
-        <option>Debt</option>
-        <option>Savings</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <button class="modal-btn modal-btn-primary" onclick="saveAddModal()">Add payment</button>
-    <button class="modal-btn modal-btn-cancel" onclick="closeAddModal()">Cancel</button>
-  </div>
-</div>
-
-<!-- TOAST -->
-
-<div class="toast" id="toast"></div>
-
-<!-- ── OVERVIEW TAB ── -->
-
-<div class="content active" id="tab-overview">
-
-  <div class="summary-strip">
-    <div class="summary-tile tile-income">
-      <div class="label">Income</div>
-      <div class="amount" id="ov-income">£5,583</div>
-    </div>
-    <div class="summary-tile tile-out">
-      <div class="label">Out</div>
-      <div class="amount" id="ov-out">—</div>
-    </div>
-    <div class="summary-tile tile-remaining" id="ov-remaining-tile">
-      <div class="label">Left</div>
-      <div class="amount" id="ov-remaining">—</div>
-    </div>
+    <div class="period-date" id="periodDate"></div>
   </div>
 
+  <div class="scroll-area" id="scrollArea">
+
+```
+<div class="screen active" id="scr-overview">
+  <div class="tiles">
+    <div class="tile"><div class="tile-lbl">Income</div><div class="tile-val g" id="ov-income">£5,583</div></div>
+    <div class="tile"><div class="tile-lbl">Out</div><div class="tile-val r" id="ov-out">—</div></div>
+    <div class="tile"><div class="tile-lbl">Left</div><div class="tile-val b" id="ov-left">—</div></div>
+  </div>
   <div class="card">
-    <div class="card-title"><span>📋</span> Direct Debits</div>
-    <div class="progress-wrap">
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
-        <span id="ov-dd-count" style="color:var(--ink3)">0 of 0 confirmed</span>
-        <span id="ov-dd-amount" style="font-weight:600;color:var(--green)">£0</span>
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="ov-dd-bar" style="width:0%"></div>
-      </div>
+    <div class="card-title">📋 Direct Debits</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;">
+      <span id="ov-dd-lbl" style="color:var(--ink3)">0 of 0 confirmed</span>
+      <span id="ov-dd-amt" style="font-weight:600;color:var(--green)">£0</span>
     </div>
+    <div class="prog-bg"><div class="prog-fill" id="ov-dd-bar" style="width:0%"></div></div>
   </div>
-
   <div class="card">
-    <div class="card-title"><span>🛒</span> Variable Spend</div>
-    <div id="ov-variable-list"></div>
+    <div class="card-title">🛒 Variable</div>
+    <div id="ov-var"></div>
   </div>
-
   <div class="card">
-    <div class="card-title"><span>💳</span> Debt Progress</div>
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+    <div class="card-title">💳 Debt</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
       <span style="font-size:13px;color:var(--ink3)">Total remaining</span>
-      <span style="font-family:'DM Serif Display',serif;font-size:22px;" id="ov-debt-total">£20,000</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:22px;" id="ov-debt">£20,000</span>
     </div>
-    <div class="progress-wrap">
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="ov-debt-bar" style="width:0%;background:var(--accent)"></div>
-      </div>
-      <div class="progress-label">
-        <span id="ov-debt-paid">£0 paid</span>
-        <span>£20,000 start</span>
-      </div>
-    </div>
-    <div style="margin-top:10px;font-size:12px;color:var(--ink3)" id="ov-debt-eta"></div>
+    <div class="prog-bg"><div class="prog-fill" id="ov-debt-bar" style="width:0%;background:var(--gold)"></div></div>
+    <div class="prog-labels"><span id="ov-debt-paid">£0 paid</span><span>£20,000 start</span></div>
+    <div style="font-size:12px;color:var(--ink3);margin-top:8px;" id="ov-debt-eta"></div>
   </div>
-
 </div>
 
-<!-- ── CHECKLIST TAB ── -->
-
-<div class="content" id="tab-checklist">
-  <div id="checklist-all-done" style="display:none">
-    <div class="all-done-banner">
-      <div class="big">🎉 All done!</div>
-      <div class="sub">Every direct debit confirmed this month</div>
-    </div>
+<div class="screen" id="scr-dd">
+  <div id="dd-done" style="display:none">
+    <div class="all-done-card"><div class="ad-big">🎉 All confirmed!</div><div class="ad-sub">Every payment ticked off this period</div></div>
   </div>
-  <div id="checklist-body"></div>
+  <div id="dd-body"></div>
 </div>
 
-<!-- ── VARIABLE TAB ── -->
-
-<div class="content" id="tab-variable">
+<div class="screen" id="scr-var">
   <div class="card">
-    <div class="card-title"><span>🛒</span> Variable Spend</div>
-    <div id="var-items-list"></div>
+    <div class="card-title">🛒 Variable Spend</div>
+    <div id="var-list"></div>
     <div style="border-top:2px solid var(--paper2);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:13px;font-weight:600;">Total</span>
       <div style="text-align:right;">
-        <div style="font-family:'DM Serif Display',serif;font-size:20px;" id="var-total-actual">£0</div>
-        <div style="font-size:11px;color:var(--ink3)">Budget: <span id="var-total-budget">£1,165</span></div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;" id="var-total">—</div>
+        <div style="font-size:11px;color:var(--ink3)">Budget: <span id="var-bud">£975</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── DEBT TAB ── -->
-
-<div class="content" id="tab-debt">
-
-  <div class="debt-total-hero">
-    <div class="debt-hero-label">Total Debt Remaining</div>
-    <div class="debt-hero-amount" id="debt-hero-amount">£20,000</div>
-    <div class="debt-hero-sub">Paying approx. <strong>£1,000/month</strong> · <span id="debt-eta-hero">~20 months to clear</span></div>
-    <div class="debt-monthly-grid" id="debt-monthly-grid"></div>
+<div class="screen" id="scr-debt">
+  <div class="debt-hero">
+    <div class="dh-lbl">Total Debt Remaining</div>
+    <div class="dh-amt" id="dh-amt">£20,000</div>
+    <div class="dh-sub">Paying approx. <strong>£1,000/month</strong> · <span id="dh-eta">~20 months</span></div>
+    <div class="debt-grid" id="debt-grid"></div>
   </div>
-
   <div class="card">
-    <div class="card-title"><span>📝</span> Update balances</div>
-    <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;">Enter current balance for each debt. Tap a field to update.</div>
-    <div id="debt-items-list"></div>
+    <div class="card-title">📝 Update balances</div>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;">Enter current balance for each debt</div>
+    <div id="debt-list"></div>
   </div>
+</div>
+```
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-overview" onclick="go('overview')"><span class="ni">📊</span>Overview</button>
+    <button class="nav-item" id="nav-dd" onclick="go('dd')"><span class="ni">📋</span>Payments</button>
+    <button class="nav-item" id="nav-var" onclick="go('var')"><span class="ni">🛒</span>Variable</button>
+    <button class="nav-item" id="nav-debt" onclick="go('debt')"><span class="ni">💳</span>Debt</button>
+  </nav>
 
 </div>
 
+<!-- CONTEXT SHEET -->
+
+<div class="sheet-overlay" id="ctxBg" onclick="closeCtx()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="ctx-name">Options</div>
+    <div class="s-opt g" onclick="setSt('confirmed')"><span class="s-opt-icon">✅</span>Confirmed out</div>
+    <div class="s-opt a" onclick="setSt('checking')"><span class="s-opt-icon">❓</span>Need to check</div>
+    <div class="s-opt r" onclick="setSt('issue')"><span class="s-opt-icon">❌</span>Issue / problem</div>
+    <div class="s-opt"   onclick="openEdit()"><span class="s-opt-icon">✏️</span>Edit amount / name</div>
+    <div class="s-opt r" id="ctx-del" style="display:none" onclick="delDD()"><span class="s-opt-icon">🗑️</span>Delete</div>
+    <div class="s-opt gr" onclick="setSt('')"><span class="s-opt-icon">⭕</span>Reset status</div>
+  </div>
+</div>
+
+<!-- FORM SHEET -->
+
+<div class="form-bg" id="formBg" onclick="closeForm()">
+  <div class="form-sheet" onclick="event.stopPropagation()">
+    <div class="f-handle"></div>
+    <div class="f-title" id="f-title">Edit Payment</div>
+    <div class="f-field"><div class="f-lbl">Name</div><input class="f-inp" id="f-name" type="text" placeholder="e.g. Netflix"></div>
+    <div class="f-field"><div class="f-lbl">Amount £</div><input class="f-inp" id="f-amount" type="number" inputmode="decimal" placeholder="0.00"></div>
+    <div class="f-field"><div class="f-lbl">Due date</div><input class="f-inp" id="f-due" type="text" placeholder="e.g. 1st, 15th"></div>
+    <div class="f-field"><div class="f-lbl">Section</div>
+      <select class="f-inp" id="f-section">
+        <option>Home</option><option>Transport</option><option>Insurance</option>
+        <option>Debt</option><option>Savings</option><option>Other</option>
+      </select>
+    </div>
+    <button class="f-btn f-primary" id="f-save" onclick="saveForm()">Save</button>
+    <button class="f-btn f-cancel" onclick="closeForm()">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────────
-const MONTHS = ['January','February','March','April','May','June',
-                'July','August','September','October','November','December'];
-const SHORT_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-// Period labels: period index N = "24 MONTHS[N] – 23 MONTHS[N+1]"
-const PERIOD_LABELS = [
-  '24 Jan – 23 Feb', '24 Feb – 23 Mar', '24 Mar – 23 Apr',
-  '24 Apr – 23 May', '24 May – 23 Jun', '24 Jun – 23 Jul',
-  '24 Jul – 23 Aug', '24 Aug – 23 Sep', '24 Sep – 23 Oct',
-  '24 Oct – 23 Nov', '24 Nov – 23 Dec', '24 Dec – 23 Jan'
-];
-
-// Current period: if today >= 24th, period = this month; else period = previous month
-function getCurrentPeriod() {
-  const now = new Date();
-  const day = now.getDate();
-  const m = now.getMonth(); // 0=Jan
-  return day >= 24 ? m : (m === 0 ? 11 : m - 1);
-}
-
-function getPeriodDates(periodIdx) {
-  // Period N starts 24th of month N, ends 23rd of month N+1
-  const startMonth = MONTHS[periodIdx];
-  const endMonthIdx = (periodIdx + 1) % 12;
-  const endMonth = MONTHS[endMonthIdx];
-  return `24 ${startMonth} – 23 ${endMonth}`;
-}
-
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SHORT  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const INCOME = 5583;
-
-const DD_LIST = [
-  { id: 'mortgage',    name: 'Mortgage / Rent',       amount: 812.37, due: '1st',  section: 'Home' },
-  { id: 'council',     name: 'Council Tax',            amount: 185.00, due: '1st',  section: 'Home' },
-  { id: 'electricity', name: 'Electricity',            amount: 104.00, due: '3rd',  section: 'Home' },
-  { id: 'gas',         name: 'Gas / Oil',              amount: 104.00, due: '3rd',  section: 'Home' },
-  { id: 'water',       name: 'Water',                  amount:  95.00, due: '5th',  section: 'Home' },
-  { id: 'internet',    name: 'Internet',               amount:  30.00, due: '5th',  section: 'Home' },
-  { id: 'phone',       name: 'Phone',                  amount:  21.00, due: '7th',  section: 'Home' },
-  { id: 'tvlicence',   name: 'TV Licence',             amount:  15.00, due: '7th',  section: 'Home' },
-  { id: 'homeins',     name: 'Home Insurance',         amount:  20.00, due: '8th',  section: 'Home' },
-  { id: 'carpay',      name: 'Car Payment',            amount: 380.00, due: '1st',  section: 'Transport' },
-  { id: 'autoins',     name: 'Auto Insurance',         amount:  59.00, due: '10th', section: 'Transport' },
-  { id: 'gapins',      name: 'Gap Insurance',          amount:  14.14, due: '10th', section: 'Transport' },
-  { id: 'lifeins',     name: 'Life Insurance',         amount:   9.89, due: '12th', section: 'Insurance' },
-  { id: 'healthins',   name: 'Health Insurance',       amount:  20.00, due: '12th', section: 'Insurance' },
-  { id: 'union',       name: 'Union',                  amount:   4.24, due: '15th', section: 'Other' },
-  { id: 'kidsclubs',   name: 'Kids Clubs',             amount:  25.00, due: '15th', section: 'Other' },
-  { id: 'nursery',     name: 'Nursery',                amount: 130.00, due: '15th', section: 'Other' },
-  { id: 'barclaycard', name: 'Barclaycard (min)',      amount: 150.00, due: '18th', section: 'Debt' },
-  { id: 'hsbc',        name: 'HSBC (min)',             amount: 407.82, due: '18th', section: 'Debt' },
-  { id: 'paypal',      name: 'PayPal (min)',           amount: 100.00, due: '20th', section: 'Debt' },
-  { id: 'lloyds',      name: 'Lloyds (min)',           amount: 313.86, due: '20th', section: 'Debt' },
-  { id: 'extradebt',   name: 'Additional Debt',        amount:  28.32, due: '22nd', section: 'Debt' },
-  { id: 'carloan',     name: 'Car Loan',               amount: 270.00, due: '1st',  section: 'Transport' },
-  { id: 'savings',     name: 'Savings Transfer',       amount: 100.00, due: '25th', section: 'Savings' },
-];
-
-const VAR_LIST = [
-  { id: 'groceries', name: 'Groceries', emoji: '🛒', budget: 800 },
-  { id: 'fuel',      name: 'Fuel',      emoji: '⛽', budget: 123 },
-  { id: 'tunnel',    name: 'Tunnel',    emoji: '🚗', budget:  10 },
-  { id: 'vet',       name: 'Vet / Pet', emoji: '🐾', budget:  31 },
-  { id: 'medicine',  name: 'Medicine',  emoji: '💊', budget:  11 },
-  { id: 'other',     name: 'Other',     emoji: '📦', budget:   0 },
-];
-
-const DEBT_LIST = [
-  { id: 'debt_barclaycard', name: 'Barclaycard', opening: 10700 },
-  { id: 'debt_amex',        name: 'Amex',         opening:  4750 },
-  { id: 'debt_halifax',     name: 'Halifax',      opening:  9118.56 },
-  { id: 'debt_paypal',      name: 'PayPal',       opening:  2080.47 },
-  { id: 'debt_overdraft',   name: 'Dan Overdraft',opening:  2300 },
-  { id: 'debt_school',      name: 'School Fees',  opening:   600 },
-  { id: 'debt_very',        name: 'Very',         opening:   253.98 },
-  { id: 'debt_hsbc',        name: 'HSBC',         opening:     0 },
-  { id: 'debt_lloyds',      name: 'Lloyds',       opening:     0 },
-];
-
-// Sum of all opening balances above = 29,802.01
-// DEBT_START is what we show as the baseline for progress tracking
-// Set to current known total — update this as you pay things down
 const DEBT_START = 20000;
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let currentMonth = getCurrentPeriod();
-let activeTab = 'overview';
-let ctxTarget = null;
+const DD_BASE = [
+  {id:'mortgage',    name:'Mortgage / Rent',   amount:812.37, due:'1st',  section:'Home'},
+  {id:'council',     name:'Council Tax',        amount:185.00, due:'1st',  section:'Home'},
+  {id:'electricity', name:'Electricity',        amount:104.00, due:'3rd',  section:'Home'},
+  {id:'gas',         name:'Gas / Oil',          amount:104.00, due:'3rd',  section:'Home'},
+  {id:'water',       name:'Water',              amount: 95.00, due:'5th',  section:'Home'},
+  {id:'internet',    name:'Internet',           amount: 30.00, due:'5th',  section:'Home'},
+  {id:'phone',       name:'Phone',              amount: 21.00, due:'7th',  section:'Home'},
+  {id:'tvlicence',   name:'TV Licence',         amount: 15.00, due:'7th',  section:'Home'},
+  {id:'homeins',     name:'Home Insurance',     amount: 20.00, due:'8th',  section:'Home'},
+  {id:'carpay',      name:'Car Payment',        amount:380.00, due:'1st',  section:'Transport'},
+  {id:'carloan',     name:'Car Loan',           amount:270.00, due:'1st',  section:'Transport'},
+  {id:'autoins',     name:'Auto Insurance',     amount: 59.00, due:'10th', section:'Transport'},
+  {id:'gapins',      name:'Gap Insurance',      amount: 14.14, due:'10th', section:'Transport'},
+  {id:'lifeins',     name:'Life Insurance',     amount:  9.89, due:'12th', section:'Insurance'},
+  {id:'healthins',   name:'Health Insurance',   amount: 20.00, due:'12th', section:'Insurance'},
+  {id:'union',       name:'Union',              amount:  4.24, due:'15th', section:'Other'},
+  {id:'kidsclubs',   name:'Kids Clubs',         amount: 25.00, due:'15th', section:'Other'},
+  {id:'nursery',     name:'Nursery',            amount:130.00, due:'15th', section:'Other'},
+  {id:'barclaycard', name:'Barclaycard (min)',  amount:150.00, due:'18th', section:'Debt'},
+  {id:'hsbc',        name:'HSBC (min)',         amount:407.82, due:'18th', section:'Debt'},
+  {id:'paypal',      name:'PayPal (min)',       amount:100.00, due:'20th', section:'Debt'},
+  {id:'lloyds',      name:'Lloyds (min)',       amount:313.86, due:'20th', section:'Debt'},
+  {id:'extradebt',   name:'Additional Debt',    amount: 28.32, due:'22nd', section:'Debt'},
+  {id:'savings',     name:'Savings Transfer',   amount:100.00, due:'25th', section:'Savings'},
+];
 
-// Storage helpers
-function getKey(suffix) { return `ocb_${currentMonth}_${suffix}`; }
+const VARS = [
+  {id:'groceries', name:'Groceries', emoji:'🛒', budget:800},
+  {id:'fuel',      name:'Fuel',      emoji:'⛽', budget:123},
+  {id:'tunnel',    name:'Tunnel',    emoji:'🚗', budget: 10},
+  {id:'vet',       name:'Vet / Pet', emoji:'🐾', budget: 31},
+  {id:'medicine',  name:'Medicine',  emoji:'💊', budget: 11},
+  {id:'other',     name:'Other',     emoji:'📦', budget:  0},
+];
 
-function load(key, def) {
-  try {
-    const v = localStorage.getItem(key);
-    return v !== null ? JSON.parse(v) : def;
-  } catch(e) { return def; }
+const DEBTS = [
+  {id:'d_barclay',  name:'Barclaycard',   opening:10700},
+  {id:'d_amex',     name:'Amex',          opening: 4750},
+  {id:'d_halifax',  name:'Halifax',       opening: 9118.56},
+  {id:'d_paypal',   name:'PayPal',        opening: 2080.47},
+  {id:'d_overdraft',name:'Dan Overdraft', opening: 2300},
+  {id:'d_school',   name:'School Fees',   opening:  600},
+  {id:'d_very',     name:'Very',          opening:  253.98},
+  {id:'d_hsbc',     name:'HSBC',          opening:    0},
+  {id:'d_lloyds',   name:'Lloyds',        opening:    0},
+];
+
+// State
+function getPeriod() {
+  const d = new Date(), day = d.getDate(), m = d.getMonth();
+  return day >= 24 ? m : (m === 0 ? 11 : m - 1);
+}
+let period = getPeriod();
+let ctxId = null, formMode = 'edit', curScreen = 'overview';
+
+const ld = (k, def) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; } };
+const sv = (k, v)   => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+const pk = s => `ocb_${period}_${s}`;
+const gk = s => `ocb_g_${s}`;
+const allDD = () => [...DD_BASE, ...ld(gk('custom'), [])];
+
+// Nav
+function go(s) {
+  document.querySelectorAll('.screen').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+  document.getElementById('scr-' + s).classList.add('active');
+  document.getElementById('nav-' + s).classList.add('active');
+  document.getElementById('scrollArea').scrollTop = 0;
+  curScreen = s;
+  if (s === 'dd')   renderDD();
+  if (s === 'var')  renderVar();
+  if (s === 'debt') renderDebt();
 }
 
-function save(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+function changePeriod(v) {
+  period = parseInt(v);
+  updatePeriodLabel();
+  renderAll();
 }
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-document.getElementById('monthSelect').value = currentMonth;
 
 function updatePeriodLabel() {
-  document.getElementById('periodLabel').textContent = getPeriodDates(currentMonth);
-  document.getElementById('monthSelect').value = currentMonth;
+  document.getElementById('periodDate').textContent =
+    `24 ${MONTHS[period]} – 23 ${MONTHS[(period+1)%12]}`;
 }
 
-function init() {
-  updatePeriodLabel();
-  renderChecklist();
-  renderVariable();
-  renderDebt();
+function renderAll() {
   renderOverview();
+  if (curScreen === 'dd')   renderDD();
+  if (curScreen === 'var')  renderVar();
+  if (curScreen === 'debt') renderDebt();
 }
 
-// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
-function showTab(tab) {
-  activeTab = tab;
-  document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.querySelectorAll('.tab').forEach(el => {
-    if (el.textContent.toLowerCase().includes(tab === 'checklist' ? 'direct' : tab === 'variable' ? 'variable' : tab === 'debt' ? 'debt' : 'overview')) {
-      el.classList.add('active');
-    }
-  });
-  // Fix active tab by index
-  const tabMap = { overview: 0, checklist: 1, variable: 2, debt: 3 };
-  document.querySelectorAll('.tab')[tabMap[tab]].classList.add('active');
+// Overview
+function renderOverview() {
+  const st = ld(pk('st'), {}), ov = ld(pk('ov'), {}), va = ld(pk('va'), {});
+  const dds = allDD();
+
+  const ddOut = dds.filter(d => st[d.id]==='confirmed')
+    .reduce((s,d) => s + parseFloat(ov[d.id]!==undefined ? ov[d.id] : d.amount), 0);
+  const varOut = VARS.reduce((s,v) => { const a=va[v.id]; return s+(a!==undefined&&a!==''?parseFloat(a):0); }, 0);
+  const out = ddOut + varOut, left = INCOME - out;
+
+  document.getElementById('ov-out').textContent  = out > 0 ? `£${Math.round(out).toLocaleString('en-GB')}` : '—';
+  const el = document.getElementById('ov-left');
+  el.textContent = out > 0 ? `£${Math.round(left).toLocaleString('en-GB')}` : '—';
+  el.className   = 'tile-val ' + (out===0?'b':left>=0?'g':'r');
+
+  const conf = dds.filter(d=>st[d.id]==='confirmed').length;
+  const confAmt = dds.filter(d=>st[d.id]==='confirmed')
+    .reduce((s,d)=>s+parseFloat(ov[d.id]!==undefined?ov[d.id]:d.amount),0);
+  document.getElementById('ov-dd-lbl').textContent = `${conf} of ${dds.length} confirmed`;
+  document.getElementById('ov-dd-amt').textContent = `£${Math.round(confAmt).toLocaleString('en-GB')}`;
+  document.getElementById('ov-dd-bar').style.width = (dds.length?(conf/dds.length)*100:0)+'%';
+
+  document.getElementById('ov-var').innerHTML = VARS.map(v => {
+    const a = va[v.id]!==undefined&&va[v.id]!==''?parseFloat(va[v.id]):null;
+    return `<div class="ov-vrow"><span>${v.emoji} ${v.name}</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:15px;color:${a===null?'var(--ink3)':a>v.budget?'var(--red)':'var(--green)'}">${a!==null?`£${a.toFixed(0)}`:'—'}</span></div>`;
+  }).join('');
+
+  // Debt
+  const bals = ld(pk('db'), {});
+  const hasAny = Object.keys(bals).some(k => bals[k]!==''&&bals[k]!==undefined);
+  const total  = hasAny ? DEBTS.reduce((s,d)=>{const v=bals[d.id];return s+(v!==undefined&&v!==''?parseFloat(v):0);},0) : DEBT_START;
+  const paid   = DEBT_START - total;
+  const pct    = Math.max(0,Math.min(100,(paid/DEBT_START)*100));
+  document.getElementById('ov-debt').textContent     = `£${Math.round(total).toLocaleString('en-GB')}`;
+  document.getElementById('ov-debt-bar').style.width = pct+'%';
+  document.getElementById('ov-debt-paid').textContent= `£${Math.max(0,Math.round(paid)).toLocaleString('en-GB')} paid`;
+  const mo = Math.ceil(total/1000);
+  const dt = new Date(); dt.setMonth(dt.getMonth()+mo);
+  document.getElementById('ov-debt-eta').textContent =
+    `At £1,000/month — free in ~${mo} months (${dt.toLocaleDateString('en-GB',{month:'long',year:'numeric'})})`;
 }
 
-function changeMonth(val) {
-  currentMonth = parseInt(val);
-  init();
-}
-
-// ── CHECKLIST ─────────────────────────────────────────────────────────────────
-function getAllDD() {
-  // Merge base DD_LIST with any custom ones saved in storage
-  const custom = load('ocb_custom_dd', []);
-  return [...DD_LIST, ...custom];
-}
-
-function renderChecklist() {
-  const statuses   = load(getKey('dd'), {});
-  const overrides  = load(getKey('dd_amounts'), {});  // per-period amount overrides
-  const allDD      = getAllDD();
-  const body       = document.getElementById('checklist-body');
-  const sections   = [...new Set(allDD.map(d => d.section))];
-
+// DD
+function renderDD() {
+  const st = ld(pk('st'),{}), ov = ld(pk('ov'),{}), dds = allDD();
+  const sections = [...new Set(dds.map(d=>d.section))];
   let html = '';
   sections.forEach(sec => {
-    const items = allDD.filter(d => d.section === sec);
-    html += `<div class="dd-section-label">${sec}</div>`;
-    items.forEach(dd => {
-      const status  = statuses[dd.id] || '';
-      const amount  = overrides[dd.id] !== undefined ? overrides[dd.id] : dd.amount;
-      const cls     = status === 'confirmed' ? 'confirmed' : status === 'issue' ? 'issue' : '';
-      const chk     = status === 'confirmed' ? '✓' : status === 'issue' ? '✗' : status === 'check' ? '?' : '';
-      html += `
-        <div class="dd-item ${cls}" id="dd-${dd.id}"
-             onclick="tapDD('${dd.id}')"
-             oncontextmenu="openCtxMenu(event,'${dd.id}'); return false;">
-          <div class="dd-check">${chk}</div>
-          <div class="dd-info">
-            <div class="dd-name">${dd.name}</div>
-            <div class="dd-due">Due ~${dd.due}</div>
-          </div>
-          <div class="dd-amount-wrap">
-            <div class="dd-amount">£${parseFloat(amount).toFixed(2)}</div>
-            <div class="dd-edit-hint">hold to edit</div>
-          </div>
-        </div>`;
+    html += `<div class="sec-lbl">${sec}</div>`;
+    dds.filter(d=>d.section===sec).forEach(dd => {
+      const s = st[dd.id]||'', amt = ov[dd.id]!==undefined?ov[dd.id]:dd.amount;
+      const icon = s==='confirmed'?'✓':s==='issue'?'✗':s==='checking'?'?':'';
+      html += `<div class="dd-row ${s}" id="ddr-${dd.id}"
+        onclick="tapDD('${dd.id}')"
+        ontouchstart="startPress('${dd.id}')" ontouchend="endPress()" ontouchmove="endPress()">
+        <div class="dd-circle">${icon}</div>
+        <div class="dd-info">
+          <div class="dd-name">${dd.name}</div>
+          <div class="dd-due">Due ~${dd.due}</div>
+        </div>
+        <div class="dd-right">
+          <div class="dd-amt">£${parseFloat(amt).toFixed(2)}</div>
+          <div class="dd-hint">hold to edit</div>
+        </div>
+      </div>`;
     });
   });
-
-  html += `<div class="add-dd-btn" onclick="openAddModal()">＋ Add a payment</div>`;
-  body.innerHTML = html;
-
-  const total     = allDD.length;
-  const confirmed = allDD.filter(d => (statuses[d.id] || '') === 'confirmed').length;
-  document.getElementById('checklist-all-done').style.display = confirmed === total ? 'block' : 'none';
-  updateOverviewDD(statuses);
+  html += `<div class="add-row" onclick="openAdd()">＋ Add a payment</div>`;
+  document.getElementById('dd-body').innerHTML = html;
+  const conf = dds.filter(d=>st[d.id]==='confirmed').length;
+  document.getElementById('dd-done').style.display = (conf===dds.length&&dds.length>0)?'block':'none';
 }
 
 function tapDD(id) {
-  const statuses = load(getKey('dd'), {});
-  const current  = statuses[id] || '';
-  statuses[id]   = current === 'confirmed' ? '' : 'confirmed';
-  save(getKey('dd'), statuses);
-  renderChecklist();
-  renderOverview();
-  if (statuses[id] === 'confirmed') showToast('✓ Confirmed');
+  const st = ld(pk('st'),{});
+  st[id] = st[id]==='confirmed'?'':'confirmed';
+  sv(pk('st'),st);
+  renderDD(); renderOverview();
+  if (st[id]==='confirmed') toast('✓ Confirmed');
 }
 
-let ctxId = null;
-function openCtxMenu(e, id) {
-  e.preventDefault();
-  ctxId = id;
-  // Show delete only for custom DDs
-  const isCustom = load('ocb_custom_dd', []).some(d => d.id === id);
-  document.getElementById('ctx-delete-btn').style.display = isCustom ? 'flex' : 'none';
-  document.getElementById('ctxMenu').classList.add('show');
-  document.getElementById('ctxOverlay').classList.add('show');
-}
-
-function closeCtxMenu() {
-  document.getElementById('ctxMenu').classList.remove('show');
-  document.getElementById('ctxOverlay').classList.remove('show');
-  ctxId = null;
-}
-
-function setDDStatus(status) {
-  if (!ctxId) return;
-  const statuses  = load(getKey('dd'), {});
-  statuses[ctxId] = status;
-  save(getKey('dd'), statuses);
-  closeCtxMenu();
-  renderChecklist();
-  renderOverview();
-  const labels = { confirmed: '✓ Confirmed', check: '? Flagged to check', issue: '✗ Issue flagged', '': 'Reset' };
-  showToast(labels[status] || 'Updated');
-}
-
-// ── EDIT MODAL ────────────────────────────────────────────────────────────────
-let editingId = null;
-
-function openEditModal(id) {
-  editingId = id;
-  const allDD     = getAllDD();
-  const dd        = allDD.find(d => d.id === id);
-  const overrides = load(getKey('dd_amounts'), {});
-  const amount    = overrides[id] !== undefined ? overrides[id] : (dd ? dd.amount : '');
-
-  document.getElementById('editModalTitle').textContent = `Edit: ${dd ? dd.name : ''}`;
-  document.getElementById('editName').value   = dd ? dd.name : '';
-  document.getElementById('editAmount').value = amount;
-  document.getElementById('editDue').value    = dd ? dd.due : '';
-  document.getElementById('editSection').value = dd ? dd.section : 'Other';
-  document.getElementById('editModal').classList.add('show');
-}
-
-function closeEditModal(e) {
-  if (e && e.target !== document.getElementById('editModal')) return;
-  document.getElementById('editModal').classList.remove('show');
-  editingId = null;
-}
-
-function saveEditModal() {
-  if (!editingId) return;
-  const name    = document.getElementById('editName').value.trim();
-  const amount  = parseFloat(document.getElementById('editAmount').value) || 0;
-  const due     = document.getElementById('editDue').value.trim();
-  const section = document.getElementById('editSection').value;
-
-  // Save amount override for this period
-  const overrides   = load(getKey('dd_amounts'), {});
-  overrides[editingId] = amount;
-  save(getKey('dd_amounts'), overrides);
-
-  // If it's a custom DD, also update the base record
-  const custom = load('ocb_custom_dd', []);
-  const idx    = custom.findIndex(d => d.id === editingId);
-  if (idx !== -1) {
-    custom[idx] = { ...custom[idx], name, amount, due, section };
-    save('ocb_custom_dd', custom);
-  }
-
-  document.getElementById('editModal').classList.remove('show');
-  editingId = null;
-  renderChecklist();
-  renderOverview();
-  showToast('✓ Updated');
-}
-
-function deleteDD(id) {
-  const custom = load('ocb_custom_dd', []);
-  const updated = custom.filter(d => d.id !== id);
-  save('ocb_custom_dd', updated);
-  renderChecklist();
-  renderOverview();
-  showToast('Deleted');
-}
-
-// ── ADD MODAL ─────────────────────────────────────────────────────────────────
-function openAddModal() {
-  document.getElementById('addName').value   = '';
-  document.getElementById('addAmount').value = '';
-  document.getElementById('addDue').value    = '';
-  document.getElementById('addSection').value = 'Other';
-  document.getElementById('addModal').classList.add('show');
-}
-
-function closeAddModal(e) {
-  if (e && e.target !== document.getElementById('addModal')) return;
-  document.getElementById('addModal').classList.remove('show');
-}
-
-function saveAddModal() {
-  const name    = document.getElementById('addName').value.trim();
-  const amount  = parseFloat(document.getElementById('addAmount').value) || 0;
-  const due     = document.getElementById('addDue').value.trim() || '—';
-  const section = document.getElementById('addSection').value;
-
-  if (!name) { showToast('Please enter a name'); return; }
-
-  const id     = 'custom_' + Date.now();
-  const custom = load('ocb_custom_dd', []);
-  custom.push({ id, name, amount, due, section });
-  save('ocb_custom_dd', custom);
-
-  document.getElementById('addModal').classList.remove('show');
-  renderChecklist();
-  renderOverview();
-  showToast('✓ Payment added');
-}
-
-// ── VARIABLE ──────────────────────────────────────────────────────────────────
-function renderVariable() {
-  const actuals = load(getKey('var'), {});
-  let html = '';
-  let totalActual = 0, totalBudget = 0;
-
-  VAR_LIST.forEach(v => {
-    const actual = actuals[v.id] !== undefined ? actuals[v.id] : '';
-    const diff = actual !== '' ? v.budget - parseFloat(actual) : null;
-    totalBudget += v.budget;
-    if (actual !== '') totalActual += parseFloat(actual);
-
-    let diffHtml = '';
-    if (diff !== null) {
-      const cls = diff < 0 ? 'over' : 'under';
-      const sign = diff < 0 ? '-' : '+';
-      diffHtml = `<div class="var-diff ${cls}">${sign}£${Math.abs(diff).toFixed(0)}</div>`;
-    }
-
-    html += `
-      <div class="var-item">
-        <div class="var-emoji">${v.emoji}</div>
-        <div class="var-info">
-          <div class="var-name">${v.name}</div>
-          <div class="var-budget">Budget: £${v.budget}</div>
-        </div>
-        <div class="var-input-wrap">
-          <input class="var-input" type="number" inputmode="decimal" placeholder="£0"
-                 value="${actual}" 
-                 onchange="saveVar('${v.id}', this.value)"
-                 onblur="saveVar('${v.id}', this.value)">
-          ${diffHtml}
-        </div>
-      </div>`;
-  });
-
-  document.getElementById('var-items-list').innerHTML = html;
-  document.getElementById('var-total-actual').textContent = totalActual > 0 ? `£${totalActual.toFixed(0)}` : '—';
-  document.getElementById('var-total-budget').textContent = `£${totalBudget}`;
-
-  updateOverviewVariable(actuals);
-}
-
-function saveVar(id, val) {
-  const actuals = load(getKey('var'), {});
-  actuals[id] = val === '' ? '' : parseFloat(val) || 0;
-  save(getKey('var'), actuals);
-  renderVariable();
-  renderOverview();
-}
-
-// ── DEBT ──────────────────────────────────────────────────────────────────────
-function renderDebt() {
-  // Build monthly totals across all months
-  const monthlyTotals = [];
-  for (let m = 0; m < 12; m++) {
-    const balances = load(`ocb_${m}_debt`, {});
-    if (Object.keys(balances).length > 0) {
-      const total = DEBT_LIST.reduce((sum, d) => {
-        const v = balances[d.id];
-        return sum + (v !== undefined && v !== '' ? parseFloat(v) : 0);
-      }, 0);
-      monthlyTotals[m] = total;
-    }
-  }
-
-  // Current month balances — only sum what's actually been entered
-  const balances = load(getKey('debt'), {});
-  const hasAnyBalance = Object.keys(balances).some(k => balances[k] !== '' && balances[k] !== undefined);
-  const currentTotal = hasAnyBalance
-    ? DEBT_LIST.reduce((sum, d) => {
-        const v = balances[d.id];
-        return sum + (v !== undefined && v !== '' ? parseFloat(v) : 0);
-      }, 0)
-    : DEBT_START;
-
-  // Hero
-  document.getElementById('debt-hero-amount').textContent = `£${currentTotal.toLocaleString('en-GB', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
-
-  // ETA
-  const monthlyPay = 1000;
-  const monthsLeft = Math.ceil(currentTotal / monthlyPay);
-  document.getElementById('debt-eta-hero').textContent = `~${monthsLeft} months to clear`;
-
-  // Monthly grid
-  let gridHtml = '';
-  for (let m = 0; m < 12; m++) {
-    const hasData = monthlyTotals[m] !== undefined;
-    const prevTotal = m > 0 ? (monthlyTotals[m-1] || DEBT_START) : DEBT_START;
-    const reduction = hasData ? prevTotal - monthlyTotals[m] : null;
-    const shortLabel = `${SHORT_MONTHS[m]}`;
-    gridHtml += `
-      <div class="debt-month-dot ${hasData ? 'has-data' : ''}">
-        <div class="dot-label">${shortLabel}</div>
-        ${hasData && reduction !== null ? `<div class="dot-val">-£${Math.round(reduction)}</div>` : '<div class="dot-val" style="opacity:0.3">—</div>'}
-      </div>`;
-  }
-  document.getElementById('debt-monthly-grid').innerHTML = gridHtml;
-
-  // Item list
-  let itemHtml = '';
-  DEBT_LIST.forEach(d => {
-    const val = balances[d.id] !== undefined ? balances[d.id] : '';
-    const displayOpening = `Opening: £${d.opening.toLocaleString('en-GB', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-    itemHtml += `
-      <div class="debt-item">
-        <div class="debt-item-info">
-          <div class="debt-item-name">${d.name}</div>
-          <div class="debt-item-balance">${displayOpening}</div>
-        </div>
-        <input class="debt-item-input" type="number" inputmode="decimal" 
-               placeholder="£ now"
-               value="${val}"
-               onchange="saveDebt('${d.id}', this.value)"
-               onblur="saveDebt('${d.id}', this.value)">
-      </div>`;
-  });
-  document.getElementById('debt-items-list').innerHTML = itemHtml;
-
-  // Overview debt bar
-  const paid = DEBT_START - currentTotal;
-  const pct = Math.max(0, Math.min(100, (paid / DEBT_START) * 100));
-  document.getElementById('ov-debt-bar').style.width = pct + '%';
-  document.getElementById('ov-debt-total').textContent = `£${currentTotal.toLocaleString('en-GB', {maximumFractionDigits: 0})}`;
-  document.getElementById('ov-debt-paid').textContent = `£${Math.max(0, paid).toLocaleString('en-GB', {maximumFractionDigits: 0})} paid`;
-  const etaMonths = Math.ceil(currentTotal / monthlyPay);
-  document.getElementById('ov-debt-eta').textContent = `At £1,000/month — debt free in approx. ${etaMonths} months (${getPayoffDate(etaMonths)})`;
-}
-
-function saveDebt(id, val) {
-  const balances = load(getKey('debt'), {});
-  balances[id] = val === '' ? '' : parseFloat(val) || 0;
-  save(getKey('debt'), balances);
-  renderDebt();
-  renderOverview();
-}
-
-function getPayoffDate(months) {
-  const d = new Date();
-  d.setMonth(d.getMonth() + months);
-  return d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-}
-
-// ── OVERVIEW ──────────────────────────────────────────────────────────────────
-function updateOverviewDD(statuses) {
-  const allDD    = getAllDD();
-  const overrides = load(getKey('dd_amounts'), {});
-  const confirmed = allDD.filter(d => (statuses[d.id] || '') === 'confirmed');
-  const confirmedAmount = confirmed.reduce((s, d) => {
-    const amt = overrides[d.id] !== undefined ? overrides[d.id] : d.amount;
-    return s + parseFloat(amt);
-  }, 0);
-  const total = allDD.length;
-  const pct   = (confirmed.length / total) * 100;
-
-  document.getElementById('ov-dd-count').textContent  = `${confirmed.length} of ${total} confirmed`;
-  document.getElementById('ov-dd-amount').textContent = `£${confirmedAmount.toFixed(0)} confirmed`;
-  document.getElementById('ov-dd-bar').style.width    = pct + '%';
-}
-
-function updateOverviewVariable(actuals) {
-  let html = '';
-  VAR_LIST.forEach(v => {
-    const actual = actuals[v.id] !== undefined && actuals[v.id] !== '' ? parseFloat(actuals[v.id]) : null;
-    const diff = actual !== null ? v.budget - actual : null;
-    html += `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--paper2);">
-        <span style="font-size:13px;">${v.emoji} ${v.name}</span>
-        <span style="font-family:'DM Serif Display',serif;font-size:15px;color:${diff === null ? 'var(--ink3)' : diff < 0 ? 'var(--red)' : 'var(--green)'}">
-          ${actual !== null ? `£${actual.toFixed(0)}` : '—'}
-        </span>
-      </div>`;
-  });
-  document.getElementById('ov-variable-list').innerHTML = html;
-}
-
-function renderOverview() {
-  const statuses  = load(getKey('dd'), {});
-  const actuals   = load(getKey('var'), {});
-  const overrides = load(getKey('dd_amounts'), {});
-  const allDD     = getAllDD();
-
-  const ddConfirmedTotal = allDD
-    .filter(d => (statuses[d.id]||'') === 'confirmed')
-    .reduce((s, d) => {
-      const amt = overrides[d.id] !== undefined ? overrides[d.id] : d.amount;
-      return s + parseFloat(amt);
-    }, 0);
-  const varTotal = VAR_LIST.reduce((s, v) => {
-    const a = actuals[v.id];
-    return s + (a !== undefined && a !== '' ? parseFloat(a) : 0);
-  }, 0);
-
-  const totalOut = ddConfirmedTotal + varTotal;
-  const remaining = INCOME - totalOut;
-
-  document.getElementById('ov-income').textContent = `£${INCOME.toLocaleString('en-GB')}`;
-  document.getElementById('ov-out').textContent = totalOut > 0 ? `£${totalOut.toFixed(0)}` : '—';
-  document.getElementById('ov-remaining').textContent = totalOut > 0 ? `£${remaining.toFixed(0)}` : '—';
-
-  const tile = document.getElementById('ov-remaining-tile');
-  tile.classList.remove('positive', 'negative');
-  if (totalOut > 0) tile.classList.add(remaining >= 0 ? 'positive' : 'negative');
-
-  updateOverviewDD(statuses);
-  updateOverviewVariable(actuals);
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-// ── LONG PRESS (iOS fix) ──────────────────────────────────────────────────────
 let pressTimer;
-document.addEventListener('touchstart', function(e) {
-  const dd = e.target.closest('.dd-item');
-  if (!dd) return;
-  const id = dd.id.replace('dd-', '');
-  pressTimer = setTimeout(() => openCtxMenu(e, id), 500);
-}, { passive: true });
+function startPress(id){ pressTimer=setTimeout(()=>openCtx(id),500); }
+function endPress(){ clearTimeout(pressTimer); }
 
-document.addEventListener('touchend', () => clearTimeout(pressTimer), { passive: true });
-document.addEventListener('touchmove', () => clearTimeout(pressTimer), { passive: true });
+function openCtx(id) {
+  ctxId = id;
+  const dd = allDD().find(d=>d.id===id);
+  document.getElementById('ctx-name').textContent = dd?dd.name:'Options';
+  document.getElementById('ctx-del').style.display = ld(gk('custom'),[]).some(d=>d.id===id)?'flex':'none';
+  document.getElementById('ctxBg').classList.add('open');
+}
+function closeCtx() { document.getElementById('ctxBg').classList.remove('open'); ctxId=null; }
 
-// ── START ─────────────────────────────────────────────────────────────────────
-init();
+function setSt(s) {
+  if(!ctxId) return;
+  const st=ld(pk('st'),{}); st[ctxId]=s; sv(pk('st'),st);
+  closeCtx(); renderDD(); renderOverview();
+  toast({confirmed:'✓ Confirmed',checking:'❓ Flagged',issue:'✗ Issue noted','':'Reset'}[s]||'Updated');
+}
+
+function delDD() {
+  if(!ctxId) return;
+  sv(gk('custom'), ld(gk('custom'),[]).filter(d=>d.id!==ctxId));
+  closeCtx(); renderDD(); renderOverview(); toast('Deleted');
+}
+
+// Form
+function openEdit() {
+  closeCtx(); if(!ctxId) return;
+  formMode='edit';
+  const dd=allDD().find(d=>d.id===ctxId), ov=ld(pk('ov'),{});
+  document.getElementById('f-title').textContent = 'Edit Payment';
+  document.getElementById('f-save').textContent  = 'Save changes';
+  document.getElementById('f-name').value    = dd?dd.name:'';
+  document.getElementById('f-amount').value  = ov[ctxId]!==undefined?ov[ctxId]:(dd?dd.amount:'');
+  document.getElementById('f-due').value     = dd?dd.due:'';
+  document.getElementById('f-section').value = dd?dd.section:'Other';
+  document.getElementById('formBg').classList.add('open');
+}
+
+function openAdd() {
+  formMode='add'; ctxId=null;
+  document.getElementById('f-title').textContent = 'Add Payment';
+  document.getElementById('f-save').textContent  = 'Add payment';
+  ['f-name','f-amount','f-due'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-section').value='Other';
+  document.getElementById('formBg').classList.add('open');
+}
+
+function closeForm() { document.getElementById('formBg').classList.remove('open'); }
+
+function saveForm() {
+  const name=document.getElementById('f-name').value.trim();
+  const amount=parseFloat(document.getElementById('f-amount').value)||0;
+  const due=document.getElementById('f-due').value.trim()||'—';
+  const section=document.getElementById('f-section').value;
+  if(formMode==='add') {
+    if(!name){toast('Please enter a name');return;}
+    const custom=ld(gk('custom'),[]);
+    custom.push({id:'c_'+Date.now(),name,amount,due,section});
+    sv(gk('custom'),custom); toast('✓ Payment added');
+  } else {
+    const ov=ld(pk('ov'),{}); ov[ctxId]=amount; sv(pk('ov'),ov);
+    const custom=ld(gk('custom'),[]); const idx=custom.findIndex(d=>d.id===ctxId);
+    if(idx!==-1){custom[idx]={...custom[idx],name,amount,due,section};sv(gk('custom'),custom);}
+    toast('✓ Updated');
+  }
+  closeForm(); renderDD(); renderOverview();
+}
+
+// Variable
+function renderVar() {
+  const va=ld(pk('va'),{});
+  let html='', tot=0, bud=0;
+  VARS.forEach(v => {
+    const a=va[v.id]!==undefined?va[v.id]:'';
+    const diff=a!==''?v.budget-parseFloat(a):null;
+    bud+=v.budget; if(a!=='')tot+=parseFloat(a);
+    const dh=diff!==null?`<div class="var-diff ${diff<0?'over':'under'}">${diff<0?'-':'+'}£${Math.abs(diff).toFixed(0)}</div>`:'';
+    html+=`<div class="var-row">
+      <div class="var-emoji">${v.emoji}</div>
+      <div class="var-info"><div class="var-name">${v.name}</div><div class="var-bud">Budget: £${v.budget}</div></div>
+      <div class="var-right">
+        <input class="var-input" type="number" inputmode="decimal" placeholder="£0" value="${a}"
+               onchange="saveVar('${v.id}',this.value)" onblur="saveVar('${v.id}',this.value)">
+        ${dh}
+      </div>
+    </div>`;
+  });
+  document.getElementById('var-list').innerHTML=html;
+  document.getElementById('var-total').textContent=tot>0?`£${tot.toFixed(0)}`:'—';
+  document.getElementById('var-bud').textContent=`£${bud}`;
+}
+
+function saveVar(id,val) {
+  const va=ld(pk('va'),{}); va[id]=val===''?'':parseFloat(val)||0;
+  sv(pk('va'),va); renderVar(); renderOverview();
+}
+
+// Debt
+function renderDebt() {
+  const monthly=[];
+  for(let m=0;m<12;m++){
+    const b=ld(`ocb_${m}_db`,{});
+    if(Object.keys(b).length) monthly[m]=DEBTS.reduce((s,d)=>{const v=b[d.id];return s+(v!==undefined&&v!==''?parseFloat(v):0);},0);
+  }
+  const bals=ld(pk('db'),{});
+  const hasAny=Object.keys(bals).some(k=>bals[k]!==''&&bals[k]!==undefined);
+  const total=hasAny?DEBTS.reduce((s,d)=>{const v=bals[d.id];return s+(v!==undefined&&v!==''?parseFloat(v):0);},0):DEBT_START;
+
+  document.getElementById('dh-amt').textContent=`£${Math.round(total).toLocaleString('en-GB')}`;
+  document.getElementById('dh-eta').textContent=`~${Math.ceil(total/1000)} months to clear`;
+
+  document.getElementById('debt-grid').innerHTML=SHORT.map((m,i)=>{
+    const has=monthly[i]!==undefined;
+    const prev=i>0?(monthly[i-1]||DEBT_START):DEBT_START;
+    const red=has?prev-monthly[i]:null;
+    return `<div class="d-dot ${has?'has':''}">
+      <div class="d-dot-lbl">${m}</div>
+      <div class="d-dot-val">${has&&red!==null?`-£${Math.round(red)}`:'—'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('debt-list').innerHTML=DEBTS.map(d=>{
+    const v=bals[d.id]!==undefined?bals[d.id]:'';
+    return `<div class="debt-row">
+      <div class="debt-row-info">
+        <div class="debt-row-name">${d.name}</div>
+        <div class="debt-row-open">Opening: £${d.opening.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+      </div>
+      <input class="debt-input" type="number" inputmode="decimal" placeholder="£ now" value="${v}"
+             onchange="saveDebt('${d.id}',this.value)" onblur="saveDebt('${d.id}',this.value)">
+    </div>`;
+  }).join('');
+
+  renderOverview();
+}
+
+function saveDebt(id,val) {
+  const b=ld(pk('db'),{}); b[id]=val===''?'':parseFloat(val)||0;
+  sv(pk('db'),b); renderDebt();
+}
+
+// Toast
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// Init
+document.getElementById('periodSel').value = period;
+updatePeriodLabel();
+renderAll();
 </script>
 
 </body>
