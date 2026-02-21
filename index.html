@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -230,8 +229,6 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
 
   <div class="scroll-area" id="scrollArea">
 
-```
-<!-- OVERVIEW -->
 <div class="screen active" id="scr-overview">
   <div class="tiles">
     <div class="tile"><div class="tile-lbl">Income</div><div class="tile-val tv-green" id="ov-income">£5,583</div></div>
@@ -262,7 +259,6 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
   </div>
 </div>
 
-<!-- PAYMENTS -->
 <div class="screen" id="scr-dd">
   <div id="dd-done" style="display:none">
     <div class="all-done"><div class="all-done-big">🎉 All confirmed!</div><div class="all-done-sub">Every payment ticked off this period</div></div>
@@ -270,7 +266,6 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
   <div id="dd-body"></div>
 </div>
 
-<!-- VARIABLE -->
 <div class="screen" id="scr-var">
   <div class="card">
     <div class="card-title">🛒 Variable Spend</div>
@@ -285,7 +280,6 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
   </div>
 </div>
 
-<!-- DEBT -->
 <div class="screen" id="scr-debt">
   <div class="debt-hero">
     <div class="dh-lbl">Total Debt Remaining</div>
@@ -299,11 +293,8 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
     <div id="debt-list"></div>
   </div>
 </div>
-```
 
-  </div><!-- /scroll-area -->
-
-  <nav class="bottom-nav">
+  </div><nav class="bottom-nav">
     <button class="nav-btn active" id="nav-overview" onclick="go('overview')"><span class="ni">📊</span>Overview</button>
     <button class="nav-btn" id="nav-dd" onclick="go('dd')"><span class="ni">📋</span>Payments</button>
     <button class="nav-btn" id="nav-var" onclick="go('var')"><span class="ni">🛒</span>Variable</button>
@@ -311,8 +302,6 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
   </nav>
 
 </div>
-
-<!-- CONTEXT SHEET -->
 
 <div class="sheet-bg" id="ctxBg" onclick="closeCtx()">
   <div class="sheet" onclick="event.stopPropagation()">
@@ -326,8 +315,6 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
     <div class="s-opt s-grey"  onclick="setSt('')">       <span class="s-opt-icon">⭕</span>Reset status</div>
   </div>
 </div>
-
-<!-- FORM SHEET -->
 
 <div class="form-bg" id="formBg" onclick="closeForm()">
   <div class="form-sheet" onclick="event.stopPropagation()">
