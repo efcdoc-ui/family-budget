@@ -44,9 +44,12 @@ padding-bottom: 90px;
 .header {
 background: var(–ink);
 padding: 20px 20px 0;
+position: -webkit-sticky;
 position: sticky;
 top: 0;
 z-index: 100;
+-webkit-transform: translateZ(0);
+transform: translateZ(0);
 }
 
 .header-top {
@@ -867,7 +870,7 @@ opacity: 0.7;
       </div>
       <div class="progress-label">
         <span id="ov-debt-paid">£0 paid</span>
-        <span>£21,884 start</span>
+        <span>£20,000 start</span>
       </div>
     </div>
     <div style="margin-top:10px;font-size:12px;color:var(--ink3)" id="ov-debt-eta"></div>
@@ -1002,7 +1005,10 @@ const DEBT_LIST = [
   { id: 'debt_lloyds',      name: 'Lloyds',       opening:     0 },
 ];
 
-const DEBT_START = 21884.45;
+// Sum of all opening balances above = 29,802.01
+// DEBT_START is what we show as the baseline for progress tracking
+// Set to current known total — update this as you pay things down
+const DEBT_START = 20000;
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let currentMonth = getCurrentPeriod();
@@ -1301,18 +1307,21 @@ function renderDebt() {
     if (Object.keys(balances).length > 0) {
       const total = DEBT_LIST.reduce((sum, d) => {
         const v = balances[d.id];
-        return sum + (v !== undefined && v !== '' ? parseFloat(v) : d.opening);
+        return sum + (v !== undefined && v !== '' ? parseFloat(v) : 0);
       }, 0);
       monthlyTotals[m] = total;
     }
   }
 
-  // Current month balances
+  // Current month balances — only sum what's actually been entered
   const balances = load(getKey('debt'), {});
-  const currentTotal = DEBT_LIST.reduce((sum, d) => {
-    const v = balances[d.id];
-    return sum + (v !== undefined && v !== '' ? parseFloat(v) : d.opening);
-  }, 0);
+  const hasAnyBalance = Object.keys(balances).some(k => balances[k] !== '' && balances[k] !== undefined);
+  const currentTotal = hasAnyBalance
+    ? DEBT_LIST.reduce((sum, d) => {
+        const v = balances[d.id];
+        return sum + (v !== undefined && v !== '' ? parseFloat(v) : 0);
+      }, 0)
+    : DEBT_START;
 
   // Hero
   document.getElementById('debt-hero-amount').textContent = `£${currentTotal.toLocaleString('en-GB', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
