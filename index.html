@@ -208,6 +208,9 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
 .toast.show { top: 20px; }
 </style>
 
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
 </head>
 <body>
 <div class="app">
@@ -337,6 +340,65 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
 <div class="toast" id="toast"></div>
 
 <script>
+// --- FIREBASE INITIALIZATION & SYNC LOGIC ---
+
+var firebaseConfig = {
+  apiKey: "AIzaSyCPzGXR1Wk7XV8nN-mqWoJI1_RjocxMZTw",
+  authDomain: "budget-894da.firebaseapp.com",
+  databaseURL: "https://budget-894da-default-rtdb.firebaseio.com",
+  projectId: "budget-894da",
+  storageBucket: "budget-894da.firebasestorage.app",
+  messagingSenderId: "41620257646",
+  appId: "1:41620257646:web:c48a98e5bed03d0979df7f"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+var appData = {};
+var dataLoaded = false;
+
+// Overwrite the local 'load' function to use Firebase data
+function ld(k, def) {
+  if (!dataLoaded) {
+    // If Firebase is still connecting, fall back to phone's storage briefly
+    try { var v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; }
+  }
+  return appData[k] !== undefined ? appData[k] : def;
+}
+
+// Overwrite the 'save' function to push to Firebase
+function sv(k, v) {
+  if (dataLoaded) appData[k] = v; // Update memory instantly for a smooth UI
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} // Keep local backup just in case
+  db.ref('/budgetData/' + k).set(v); // Push to the cloud
+}
+
+// Listen for updates from the cloud (happens instantly when your wife updates it!)
+db.ref('/budgetData').on('value', function(snapshot) {
+  var cloudData = snapshot.val();
+
+  // MIGRATION: If cloud is completely empty, upload what we have on the phone!
+  if (!cloudData) {
+    cloudData = {};
+    for(var i=0; i<localStorage.length; i++) {
+       var key = localStorage.key(i);
+       if (key && key.indexOf('ocb_') === 0) {
+           try { cloudData[key] = JSON.parse(localStorage.getItem(key)); } catch(e){}
+       }
+    }
+    if (Object.keys(cloudData).length > 0) {
+       db.ref('/budgetData').set(cloudData); // Push phone data up to Firebase
+    }
+  }
+
+  appData = cloudData || {};
+  dataLoaded = true;
+  renderAll(); // Re-draw the screen with the latest numbers
+});
+
+// --- REST OF YOUR APP LOGIC ---
+
 var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var SHORT   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var INCOME  = 5583;
@@ -398,11 +460,6 @@ function getPeriod() {
 var period = getPeriod();
 var ctxId = null, formMode = 'edit', curScreen = 'overview';
 
-function ld(k, def) {
-  try { var v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; }
-  catch(e) { return def; }
-}
-function sv(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
 function pk(s) { return 'ocb_' + period + '_' + s; }
 function gk(s) { return 'ocb_g_' + s; }
 function allDD() { return DD_BASE.concat(ld(gk('custom'), [])); }
@@ -734,11 +791,11 @@ function showToast(msg) {
   setTimeout(function() { t.classList.remove('show'); }, 2000);
 }
 
-// Start
+// Initial UI setup before Firebase loads
 document.getElementById('periodSel').value = period;
 updatePeriodLabel();
 renderAll();
-</script>
 
+</script>
 </body>
 </html>
