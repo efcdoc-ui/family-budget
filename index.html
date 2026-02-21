@@ -10,7 +10,27 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: #f4f0e8; color: #0f1923; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; }
 
-.app { display: flex; flex-direction: column; min-height: 100vh; min-height: -webkit-fill-available; }
+/* PIN SCREEN */
+.pin-screen {
+  position: fixed; inset: 0; background: #0f1923; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+}
+.pin-box {
+  background: #ffffff; padding: 30px 24px; border-radius: 20px; width: 100%; max-width: 320px;
+  text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.pin-title { font-size: 20px; font-weight: 700; color: #0f1923; margin-bottom: 8px; }
+.pin-sub { font-size: 13px; color: #7a8a9a; margin-bottom: 24px; }
+.pin-inp {
+  width: 100%; padding: 16px; border: 2px solid #e8e2d8; border-radius: 12px;
+  font-size: 24px; text-align: center; letter-spacing: 8px; color: #0f1923;
+  outline: none; background: #f4f0e8; font-family: monospace; margin-bottom: 16px;
+  -webkit-appearance: none; appearance: none;
+}
+.pin-inp:focus { border-color: #c9a84c; background: #ffffff; }
+
+/* APP WRAPPER */
+.app { display: none; flex-direction: column; min-height: 100vh; min-height: -webkit-fill-available; }
 
 /* TOP BAR */
 .topbar { background: #0f1923; padding: 16px 16px 12px; flex-shrink: 0; }
@@ -213,7 +233,17 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
 
 </head>
 <body>
-<div class="app">
+
+<div id="pinScreen" class="pin-screen">
+  <div class="pin-box">
+    <div class="pin-title">🔒 O'Connor Budget</div>
+    <div class="pin-sub">Please enter your PIN</div>
+    <input type="password" id="pinInput" class="pin-inp" inputmode="numeric" pattern="[0-9]*" placeholder="••••" maxlength="4">
+    <button class="f-btn f-primary" onclick="checkPin()">Unlock</button>
+  </div>
+</div>
+
+<div class="app" id="mainApp">
 
   <div class="topbar">
     <div class="topbar-row">
@@ -340,28 +370,93 @@ box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: top 0.3s ease;
 <div class="toast" id="toast"></div>
 
 <script>
+// --- PIN SECURITY ---
+var MY_PIN = "4883";
+
+function checkPin() {
+  var input = document.getElementById('pinInput').value;
+  if (input === MY_PIN) {
+    localStorage.setItem('ocb_auth', 'unlocked');
+    unlockApp();
+  } else {
+    showToast('❌ Incorrect PIN');
+    document.getElementById('pinInput').value = '';
+  }
+}
+
+function unlockApp() {
+  document.getElementById('pinScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'flex';
+  
+  // Initialize Firebase ONLY after they unlock it
+  initFirebaseAndApp();
+}
+
+// Auto-check PIN on load
+if (localStorage.getItem('ocb_auth') === 'unlocked') {
+  unlockApp();
+}
+
+// Allow pressing "Enter" on keyboard to submit PIN
+document.getElementById('pinInput').addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    checkPin();
+  }
+});
+
+
 // --- FIREBASE INITIALIZATION & SYNC LOGIC ---
+var db, appData = {}, dataLoaded = false;
 
-var firebaseConfig = {
-  apiKey: "AIzaSyCPzGXR1Wk7XV8nN-mqWoJI1_RjocxMZTw",
-  authDomain: "budget-894da.firebaseapp.com",
-  databaseURL: "https://budget-894da-default-rtdb.firebaseio.com",
-  projectId: "budget-894da",
-  storageBucket: "budget-894da.firebasestorage.app",
-  messagingSenderId: "41620257646",
-  appId: "1:41620257646:web:c48a98e5bed03d0979df7f"
-};
+function initFirebaseAndApp() {
+  if (firebase.apps.length === 0) {
+    var firebaseConfig = {
+      apiKey: "AIzaSyCPzGXR1Wk7XV8nN-mqWoJI1_RjocxMZTw",
+      authDomain: "budget-894da.firebaseapp.com",
+      databaseURL: "https://budget-894da-default-rtdb.firebaseio.com",
+      projectId: "budget-894da",
+      storageBucket: "budget-894da.firebasestorage.app",
+      messagingSenderId: "41620257646",
+      appId: "1:41620257646:web:c48a98e5bed03d0979df7f"
+    };
+    firebase.initializeApp(firebaseConfig);
+  }
+  
+  db = firebase.database();
 
-firebase.initializeApp(firebaseConfig);
-var db = firebase.database();
+  // Listen for updates from the cloud (happens instantly when your wife updates it!)
+  db.ref('/budgetData').on('value', function(snapshot) {
+    var cloudData = snapshot.val();
 
-var appData = {};
-var dataLoaded = false;
+    // MIGRATION: If cloud is empty, upload what we have on the phone!
+    if (!cloudData) {
+      cloudData = {};
+      for(var i=0; i<localStorage.length; i++) {
+         var key = localStorage.key(i);
+         // Don't sync the PIN status, just budget data
+         if (key && key.indexOf('ocb_') === 0 && key !== 'ocb_auth') {
+             try { cloudData[key] = JSON.parse(localStorage.getItem(key)); } catch(e){}
+         }
+      }
+      if (Object.keys(cloudData).length > 0) {
+         db.ref('/budgetData').set(cloudData); // Push phone data up to Firebase
+      }
+    }
+
+    appData = cloudData || {};
+    dataLoaded = true;
+    
+    // Initial UI setup
+    document.getElementById('periodSel').value = period;
+    updatePeriodLabel();
+    renderAll(); 
+  });
+}
 
 // Overwrite the local 'load' function to use Firebase data
 function ld(k, def) {
   if (!dataLoaded) {
-    // If Firebase is still connecting, fall back to phone's storage briefly
     try { var v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; }
   }
   return appData[k] !== undefined ? appData[k] : def;
@@ -371,31 +466,9 @@ function ld(k, def) {
 function sv(k, v) {
   if (dataLoaded) appData[k] = v; // Update memory instantly for a smooth UI
   try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} // Keep local backup just in case
-  db.ref('/budgetData/' + k).set(v); // Push to the cloud
+  if (db) db.ref('/budgetData/' + k).set(v); // Push to the cloud
 }
 
-// Listen for updates from the cloud (happens instantly when your wife updates it!)
-db.ref('/budgetData').on('value', function(snapshot) {
-  var cloudData = snapshot.val();
-
-  // MIGRATION: If cloud is completely empty, upload what we have on the phone!
-  if (!cloudData) {
-    cloudData = {};
-    for(var i=0; i<localStorage.length; i++) {
-       var key = localStorage.key(i);
-       if (key && key.indexOf('ocb_') === 0) {
-           try { cloudData[key] = JSON.parse(localStorage.getItem(key)); } catch(e){}
-       }
-    }
-    if (Object.keys(cloudData).length > 0) {
-       db.ref('/budgetData').set(cloudData); // Push phone data up to Firebase
-    }
-  }
-
-  appData = cloudData || {};
-  dataLoaded = true;
-  renderAll(); // Re-draw the screen with the latest numbers
-});
 
 // --- REST OF YOUR APP LOGIC ---
 
@@ -790,11 +863,6 @@ function showToast(msg) {
   t.textContent = msg; t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 2000);
 }
-
-// Initial UI setup before Firebase loads
-document.getElementById('periodSel').value = period;
-updatePeriodLabel();
-renderAll();
 
 </script>
 </body>
